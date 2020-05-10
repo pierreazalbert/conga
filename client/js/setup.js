@@ -53,19 +53,17 @@ $(document).ready(function () {
 			var previousIDs = [];
 			querySnapshot.forEach(function(doc) {
 				previousIDs.push(doc.data().code);
-				console.log(doc.id, doc.data());
 			});
-			console.log(previousIDs);
 			return previousIDs;
 		})
 		.then(function(previousIDs) {
 			var shopCode = HashID.generateUnique(previousIDs);
-			console.log("Generated shop code: ",shopCode);
+			//console.log("Generated shop code: ",shopCode);
 			shopData.code = shopCode;
 		})
 		.then(function() {
 			shops.add(shopData).then(function(docRef) {
-				console.log("Shop registered with ID: ", docRef.id);
+				//console.log("Shop registered with ID: ", docRef.id);
 				$.ajax({
 					url:'/php/send-login-email.php',
 					type:'POST',
@@ -74,26 +72,28 @@ $(document).ready(function () {
 						id:docRef.id,
 						code:shopData.code
 					},
-					success: function (result) {console.log("Email successfully sent");},
-					error: function (error) {console.log("Error sending email");}
+					success: function (result) {
+						console.log("Email successfully sent");
+//						$('.btn').css('background-color', 'green').text('Registration complete');
+//						$('#info').css('display', 'block');
+						$('form').hide();
+						$('.alert > p > a').attr("href", "https://www.conga.store/admin?key=" + docRef.id);
+						$('.alert > p:eq(1)').text("Your shop's 4 letter code is " + shopData.code + " and this is your public booking link: https://www.conga.store/" + shopData.code);
+						$('.alert').show();
+					},
+					error: function (error) {
+						console.log("Error sending email");
+					}
 				});
 			})
 			.catch(function(error) {
 				console.error("Error adding document: ", error);
+				$('.btn').css('background-color', 'red').text('Registration failed');
 			});
 		});
 		
-	
-	//Show Alert Message(5)
-	document.querySelector('.alert').style.display = 'block';
-	
-	//Hide Alert Message After Seven Seconds(6)
-	setTimeout(function() {
-		document.querySelector('.alert').style.display = 'none';
-	}, 7000);
-	
 	//Form Reset After Submission(7)
-	document.getElementById('setupForm').reset();
+	$('#setupForm').trigger('reset');
 	
 	});
 	

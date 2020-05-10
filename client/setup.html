@@ -83,7 +83,11 @@
 			
 			<hr class="my-4">
 			
-			<h4 class="mb-4">Opening times</h4>
+			<div class="mb-4">
+				<h4>Opening times</h4>
+				
+				<h6 class="text-muted">If your shop is closed on a particular day please enter 00:00 to 00:00.</h6>
+			</div>
 			
 			<div class="mb-4">
 				<div class="form-group row justify-content-start">
@@ -244,10 +248,12 @@
 			</div>
 			
 			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="messages">
+				<input type="checkbox" class="custom-control-input" id="messages" disabled>
 				
 				<label class="custom-control-label" for="messages">Allow customers to attach personal messages to their bookings.</label>
 			</div>
+			
+			
 			
 			<hr class="mb-4">
 			
@@ -268,8 +274,16 @@
 			<hr class="mb-4">
 			
 			<button class="btn btn-primary btn-lg btn-block" type="submit">Start accepting bookings</button>
-			<div class="alert">Message Sent!</div>
+			
 		</form>
+		
+		<div class="alert alert-success" role="alert" style="display:none">
+			  <h4 class="alert-heading mb-3">Registration complete!</h4>
+			  <p>We have just sent you an email containing a secret login link to access your admin page</p>
+			  <p>Your shop's 4 letter code is ???? and this is your public booking link: https://www.conga.store/????</p>
+			  <hr>
+			  <p class="mb-0"><a href="#" class="alert-link">Click here</a> to go to your admin page now. </p>
+		</div>
 	</div>
 	
 	<footer class="my-5 pt-5 text-muted text-center text-small">
