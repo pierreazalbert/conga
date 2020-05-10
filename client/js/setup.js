@@ -29,6 +29,7 @@ function formSubmit(e) {
 	var acceptMessages = document.querySelector('#messages').checked;
 	var shopEmail = document.querySelector('#email').value;
 	
+	// Prepare object to send to database
 	var shopData = {
 				name: shopName,
 				address: shopAddress,
@@ -43,14 +44,11 @@ function formSubmit(e) {
 				},
 				bookings: {number: bookingNumber, rate: bookingRate, messages: acceptMessages}
 	}
-
 	
-//	var previous = getPreviousIDs();
-//	console.log(previous);
-//	var shopCode = HashID.generateUnique(previous);
-//	console.log(shopCode);
-
-	
+	// Query database to collect all existing shop IDs
+	// then generate unique shop ID
+	// then write completed object to database
+	// then send email with login key to admin panel
 	shops.get()
 		.then(function(querySnapshot) {
 			var previousIDs = [];
@@ -63,32 +61,29 @@ function formSubmit(e) {
 		})
 		.then(function(previousIDs) {
 			var shopCode = HashID.generateUnique(previousIDs);
-			console.log(shopCode);
+			console.log("Generated shop code: ",shopCode);
 			shopData.code = shopCode;
 		})
 		.then(function() {
 			shops.add(shopData).then(function(docRef) {
-				console.log("Document written with ID: ", docRef.id);
+				console.log("Shop registered with ID: ", docRef.id);
+				$.ajax({
+					url:'/php/send-login-email.php',
+					method:'GET',
+					data:{
+						email:shopEmail,
+						id:docRef.id,
+						code:shopData.code
+					},
+					success: function (result) {console.log("Email successfully sent");},
+					error: function (error) {console.log("Error sending email");}
+				});
 			})
 			.catch(function(error) {
 				console.error("Error adding document: ", error);
 			});
 		});
 		
-			
-
-	
-	
-	// send to Firebase	
-//	shops.add(shopData)
-//	.then(function(docRef) {
-//		console.log("Document written with ID: ", docRef.id);
-//	})
-//	.catch(function(error) {
-//		console.error("Error adding document: ", error);
-//	});
-	
-	
 	//Show Alert Message(5)
 	document.querySelector('.alert').style.display = 'block';
 	
@@ -100,38 +95,3 @@ function formSubmit(e) {
 	//Form Reset After Submission(7)
 	document.getElementById('setupForm').reset();
 }
-
-//function getPreviousIDs() {
-//	var previousIDs = [];
-//	shops.get().then(function(querySnapshot) {
-//		querySnapshot.forEach(function(doc) {
-//			previousIDs.push(doc.data().code);
-//		});
-//	});
-//	return previousIDs;
-//}
-//
-//function generateID() {
-//	var previousIDs = [];
-//	var newID = "";
-//	try {
-//		shops
-//			.get()
-//			.then(function(querySnapshot) {
-//				querySnapshot.forEach(function(doc) {
-//					previousIDs.push(doc.data().code);
-//					console.log(doc.id, doc.data());
-//				});
-//				console.log(previousIDs);
-//			})
-//			.then(function(previousIDs) {
-//				newID = HashID.generateUnique(previousIDs);
-//				console.log(newID);
-//			});
-//	 } catch (error) {
-//	 	console.log(error);
-//	 }
-//	return newID;
-//}
-//
-//
