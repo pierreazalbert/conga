@@ -66,13 +66,15 @@ function formSubmit(e) {
 			console.log(shopCode);
 			shopData.code = shopCode;
 		})
-		.add(shopData)
-		.then(function(docRef) {
-			console.log("Document written with ID: ", docRef.id);
-		})
-		.catch(function(error) {
-			console.error("Error adding document: ", error);
+		.then(function() {
+			shops.add(shopData).then(function(docRef) {
+				console.log("Document written with ID: ", docRef.id);
+			})
+			.catch(function(error) {
+				console.error("Error adding document: ", error);
+			});
 		});
+		
 			
 
 	
