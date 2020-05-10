@@ -1,10 +1,8 @@
 //listen for submit event//
-document.getElementById('setupForm').addEventListener('submit', formSubmit);
+//document.getElementById('setupForm').addEventListener('submit', formSubmit);
+$(document).ready(function () {
+	$('#setupForm').submit(function (e) {
 
-var shops = db.collection("shops");
-
-//Submit form
-function formSubmit(e) {
 	e.preventDefault();
 	
 	// Get Values from the DOM
@@ -49,6 +47,7 @@ function formSubmit(e) {
 	// then generate unique shop ID
 	// then write completed object to database
 	// then send email with login key to admin panel
+	var shops = db.collection("shops");
 	shops.get()
 		.then(function(querySnapshot) {
 			var previousIDs = [];
@@ -69,7 +68,7 @@ function formSubmit(e) {
 				console.log("Shop registered with ID: ", docRef.id);
 				$.ajax({
 					url:'/php/send-login-email.php',
-					method:'GET',
+					type:'POST',
 					data:{
 						email:shopEmail,
 						id:docRef.id,
@@ -84,6 +83,7 @@ function formSubmit(e) {
 			});
 		});
 		
+	
 	//Show Alert Message(5)
 	document.querySelector('.alert').style.display = 'block';
 	
@@ -94,4 +94,7 @@ function formSubmit(e) {
 	
 	//Form Reset After Submission(7)
 	document.getElementById('setupForm').reset();
-}
+	
+	});
+	
+});

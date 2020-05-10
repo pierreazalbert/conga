@@ -1,8 +1,8 @@
 <?php
      // Get email argument
-     $to  = $_GET['email'];
-     $id = $_GET['id'];
-     $code = $_GET['code'];
+     $to  = $_POST['email'];
+     $id = $_POST['id'];
+     $code = $_POST['code'];
 
      // Sujet
      $subject = 'Welcome to Conga!';

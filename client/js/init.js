@@ -15,6 +15,6 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
   
 // init jQuery
-$( document ).ready(function() {
-    console.log( "ready!" );
-});
+//$( document ).ready(function() {
+//    console.log( "ready!" );
+//});
