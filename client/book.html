@@ -62,18 +62,23 @@
 		<div class="py-5 text-center">
 			<img class="d-block mx-auto mb-4" src="/assets/ticket.svg" alt="" width="72" height="72">
 			
-			<h2 class="pb-3">Book your visit</h2>
+			<h2 class="pb-3" id="shop-name"></h2>
+			<h6 class="text-muted pb-4" id='shop-address'></h6>
 			
-			<p class="lead">Welcome to your shop's online booking page. Here you can book your next visit to this shop.</p>
+			<p class="lead mx-5">Bookings are only allowed on the day before your visit. If no slots are available you can still walk-in, or wait until the next day.</p>
 		</div>
 		
-		<div class="row">
-			<div class="mb-4">
-				<h4 id='shop-name'></h4>
-				
-				<h6 class="text-muted" id='shop-address'></h6>
-			</div>
+		<div class="mb-4">
+			<h4 id='todays-date'></h4>
+			
+			<h6 class="text-muted" id='shop-hours'></h6>
 		</div>
+		
+		<div class="row mb-4" id="schedule">
+			
+		</div>
+		
+		<button class="btn btn-primary btn-lg btn-block" type="submit">Confirm booking</button>
 	</div>
 </body>
 </html>
