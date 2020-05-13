@@ -1,6 +1,5 @@
-//listen for submit event//
-//document.getElementById('setupForm').addEventListener('submit', formSubmit);
 $(document).ready(function () {
+	//listen for submit event//
 	$('#setupForm').submit(function (e) {
 
 	e.preventDefault();
@@ -78,7 +77,7 @@ $(document).ready(function () {
 //						$('#info').css('display', 'block');
 						$('form').hide();
 						$('.alert > p > a').attr("href", "https://www.conga.store/admin?key=" + docRef.id);
-						$('.alert > p:eq(1)').text("Your shop's 4 letter code is " + shopData.code + " and this is your public booking link: https://www.conga.store/" + shopData.code);
+						$('.alert > p:eq(1)').text("Your shop's 4 letter code is " + shopData.code + " and this is your public booking link: https://www.conga.store/book?shop=" + shopData.code);
 						$('.alert').show();
 					},
 					error: function (error) {

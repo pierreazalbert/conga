@@ -13,8 +13,3 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 // Initialise Cloud Firestore
 var db = firebase.firestore();
-  
-// init jQuery
-//$( document ).ready(function() {
-//    console.log( "ready!" );
-//});
