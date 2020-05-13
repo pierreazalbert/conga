@@ -8,11 +8,50 @@ $(document).ready(async function () {
 	var bookings = await getBookings(shop.id);
 	// render page
 	renderPage(shop.data());
+	
+	// determine which slots are free
+	var schedule = generateSchedule(shop, bookings);
+	
 });
 
 function renderPage(shop) {
 	$('#shop-name').text(shop.name);
 	$('#shop-address').text(shop.address);
+}
+
+function generateSchedule(shop, bookings) {
+	const today = new Date();
+	var hours = shop.data().hours[today.toDateString().slice(0,3).toLowerCase()]
+	var params = shop.data().bookings;
+	console.log(params.number, params.rate);
+	
+	// calculate number of slots during the day
+	var slots_n = moment.duration(moment(hours.close, 'HH:mm')-moment(hours.open, 'HH:mm'))/moment.duration(params.rate, 'minutes');
+	console.log("Number of slots during the day: ", slots_n);
+	
+	// generate empty schedule
+	var schedule = new Array(slots_n);
+	console.log(schedule);
+//	schedule.forEach(function (slot, i) {
+//		console.log('i=',i);
+//		console.log('slot=', slot);
+//		for (var j = 0; j < params.number; j++) {
+//			var time = moment(hours.open, 'HH:mm') + i*moment.duration(params.rate, 'minutes') + j*moment.duration(5, 'minutes');
+//			slot.push({'time': moment(time).format('HH:mm'), 'free': true});
+//		}
+//		
+//	});
+	
+	for (var i = 0; i < slots_n; i++) {
+		var slots = new Array();
+		for (var j = 0; j < params.number; j++) {
+			var time = moment(hours.open, 'HH:mm') + i*moment.duration(params.rate, 'minutes') + j*moment.duration(5, 'minutes');
+			slots.push({'time': moment(time).format('HH:mm'), 'free': true});
+		}
+		schedule[i] = slots;
+	}
+	console.log(schedule);
+
 }
 
 async function getBookings(shopID) {
@@ -89,3 +128,12 @@ function allLetters(input) {
 		return false;
 	}
 }
+
+//function range(min, max, step){
+//  let arr = [];
+//  for(let i = min; i <= max; i += step){
+//     arr.push(i);
+//  }
+//  
+//  return arr;
+//}
