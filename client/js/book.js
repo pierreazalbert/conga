@@ -1,4 +1,5 @@
 var tomorrow = moment().add(1, 'days');
+Cookies.json = true;
 
 $(document).ready(async function () {
 
@@ -28,10 +29,6 @@ $(document).ready(async function () {
 
 });
 
-function addToWallet(id, booking) {
-	Cookies.set(id, booking, {expires: 1});
-}
-
 async function createBooking(shop, schedule, slot) {
 
 	// build booking object to send to database
@@ -58,7 +55,10 @@ async function createBooking(shop, schedule, slot) {
 	$(':submit').prop('ticket', doc.id);
 
 	// detach old booking and attach new booking to submit event
-	$(':submit').off('submit').submit(addToWallet(doc.id, booking));
+	$(':submit').off('click').click(function () {
+		Cookies.set(doc.id, booking, {expires: 2});
+		console.log('Added cookie with id:', doc.id);
+	});
 
 	return doc;
 }
