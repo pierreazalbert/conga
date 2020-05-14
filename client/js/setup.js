@@ -1,99 +1,120 @@
-$(document).ready(function () {
-	//listen for submit event//
-	$('#setupForm').submit(function (e) {
+$(document).ready(async function() {
+	
+	// Listen for submit event
+	formValidation();
+	$('#setupForm').submit(event => submitForm(event));
+	//$("input[id$='closed']").change(console.log('checked'));
+	$(":checkbox").change(function () {
+		console.log(this);
+		$(this).parent().parent().parent().find("input[type='time']").prop('disabled', function(i, v) {
+			return!v;
+		});
+	});
+});
 
-	e.preventDefault();
+function toggleHoursInput(input) {
+	input.parent().parent().parent().find("input[type='time']").prop('disabled', function(i, v) {
+		return!v;
+	});
+}
+
+function formValidation () {
+	// Fetch all the forms we want to apply custom Bootstrap validation styles to
+	var forms = $('needs-validation');
+	// Loop over them and prevent submission
+	var validation = Array.prototype.filter.call(forms, function(form) {
+		form.addEventListener('submit', function(event) {
+			if (form.checkValidity() === false) {
+				event.preventDefault();
+				event.stopPropagation();
+			}
+			
+			form.classList.add('was-validated');
+		}, false);
+	});
+}
+
+async function submitForm(event) {
+	event.preventDefault();
 	
 	// Get Values from the DOM
-	var shopName = document.querySelector('#name').value;
-	var shopAddress = document.querySelector('#address').value;
-	var monOpen = document.querySelector('#mon-open').value;
-	var monClose = document.querySelector('#mon-close').value;
-	var tueOpen = document.querySelector('#tue-open').value;
-	var tueClose = document.querySelector('#tue-close').value;
-	var wedOpen = document.querySelector('#wed-open').value;
-	var wedClose = document.querySelector('#wed-close').value;
-	var thuOpen = document.querySelector('#thu-open').value;
-	var thuClose = document.querySelector('#thu-close').value;
-	var friOpen = document.querySelector('#fri-open').value;
-	var friClose = document.querySelector('#fri-close').value;
-	var satOpen = document.querySelector('#sat-open').value;
-	var satClose = document.querySelector('#sat-close').value;
-	var sunOpen = document.querySelector('#sun-open').value;
-	var sunClose = document.querySelector('#sun-close').value;
-	var bookingNumber = parseInt(document.querySelector('#number').value);
-	var bookingRate = parseInt(document.querySelector('#rate').value);
-	var acceptMessages = document.querySelector('#messages').checked;
-	var shopEmail = document.querySelector('#email').value;
+	var shopName = $('#name').val();
+	var shopAddress = $('#address').val();
+	var monOpen = $('#mon-open').val();
+	var monClose = $('#mon-close').val();
+	var tueOpen = $('#tue-open').val();
+	var tueClose = $('#tue-close').val();
+	var wedOpen = $('#wed-open').val();
+	var wedClose = $('#wed-close').val();
+	var thuOpen = $('#thu-open').val();
+	var thuClose = $('#thu-close').val();
+	var friOpen = $('#fri-open').val();
+	var friClose = $('#fri-close').val();
+	var satOpen = $('#sat-open').val();
+	var satClose = $('#sat-close').val();
+	var sunOpen = $('#sun-open').val();
+	var sunClose = $('#sun-close').val();
+	var bookingNumber = parseInt($('#number').val());
+	var bookingRate = parseInt($('#rate').val());
+	var acceptMessages = $('#messages').prop('checked');
+	var shopEmail = $('#email').val();
 	
 	// Prepare object to send to database
 	var shopData = {
-				name: shopName,
-				address: shopAddress,
-				hours: {
-					mon: {open: monOpen, close: monClose},
-					tue: {open: tueOpen, close: tueClose},
-					wed: {open: wedOpen, close: wedClose},
-					thu: {open: thuOpen, close: thuClose},
-					fri: {open: friOpen, close: friClose},
-					sat: {open: satOpen, close: satClose},
-					sun: {open: sunOpen, close: sunClose}
-				},
-				bookings: {number: bookingNumber, rate: bookingRate, messages: acceptMessages}
+		name: shopName,
+		address: shopAddress,
+		hours: {
+			mon: $('#mon-closed').prop('checked') ? "closed" : {open: monOpen, close: monClose},
+			tue: $('#tue-closed').prop('checked') ? "closed" : {open: tueOpen, close: tueClose},
+			wed: $('#wed-closed').prop('checked') ? "closed" : {open: wedOpen, close: wedClose},
+			thu: $('#thu-closed').prop('checked') ? "closed" : {open: thuOpen, close: thuClose},
+			fri: $('#fri-closed').prop('checked') ? "closed" : {open: friOpen, close: friClose},
+			sat: $('#sat-closed').prop('checked') ? "closed" : {open: satOpen, close: satClose},
+			sun: $('#sun-closed').prop('checked') ? "closed" : {open: sunOpen, close: sunClose}
+		},
+		bookings: {
+			number: bookingNumber,
+			rate: bookingRate,
+			messages: acceptMessages
+		}
 	}
+	console.log(shopData);
 	
 	// Query database to collect all existing shop IDs
-	// then generate unique shop ID
-	// then write completed object to database
-	// then send email with login key to admin panel
-	var shops = db.collection("shops");
-	shops.get()
-		.then(function(querySnapshot) {
-			var previousIDs = [];
-			querySnapshot.forEach(function(doc) {
-				previousIDs.push(doc.data().code);
-			});
-			return previousIDs;
-		})
-		.then(function(previousIDs) {
-			var shopCode = HashID.generateUnique(previousIDs);
-			//console.log("Generated shop code: ",shopCode);
-			shopData.code = shopCode;
-		})
-		.then(function() {
-			shops.add(shopData).then(function(docRef) {
-				//console.log("Shop registered with ID: ", docRef.id);
-				$.ajax({
-					url:'/php/send-login-email.php',
-					type:'POST',
-					data:{
-						email:shopEmail,
-						id:docRef.id,
-						code:shopData.code
-					},
-					success: function (result) {
-						console.log("Email successfully sent");
-//						$('.btn').css('background-color', 'green').text('Registration complete');
-//						$('#info').css('display', 'block');
-						$('form').hide();
-						$('.alert > p > a').attr("href", "https://www.conga.store/admin?key=" + docRef.id);
-						$('.alert > p:eq(1)').text("Your shop's 4 letter code is " + shopData.code + " and this is your public booking link: https://www.conga.store/book?shop=" + shopData.code);
-						$('.alert').show();
-					},
-					error: function (error) {
-						console.log("Error sending email");
-					}
-				});
-			})
-			.catch(function(error) {
-				console.error("Error adding document: ", error);
-				$('.btn').css('background-color', 'red').text('Registration failed');
-			});
-		});
-		
-	//Form Reset After Submission(7)
-	$('#setupForm').trigger('reset');
+	var shops = await db.collection("shops").get();
+	var previous = new Array();
+	shops.forEach(shop => previous.push(shop.data().code));
 	
+	// Generate unique shop ID
+	shopData.code = HashID.generateUnique(previous);
+	
+	// Write completed object to database
+	var docRef = await db.collection('shops').add(shopData).catch (function(error) {
+		console.error("Error adding document: ", error);
+		$('.btn').css('background-color', 'red').text('Registration failed');
 	});
 	
-});
+	// Send email with login key to admin panel
+	$.ajax({
+		url: '/php/send-login-email.php',
+		type: 'POST',
+		data: {
+			email: shopEmail,
+			id: docRef.id,
+			code: shopData.code
+		},
+		success: function (result) {
+			console.log("Email successfully sent");
+			$('form').hide();
+			$('.alert > p > a').attr("href", "https://www.conga.store/admin?key=" + docRef.id);
+			$('.alert > p:eq(1)').text("Your shop's 4 letter code is " + shopData.code + " and this is your public booking link: https://www.conga.store/book?shop=" + shopData.code);
+			$('.alert').show();
+		},
+			error: function (error) {
+			console.log("Error sending email");
+		}
+	});				
+		
+	//Form Reset After Submission(7)
+	//$('#setupForm').trigger('reset');
+}

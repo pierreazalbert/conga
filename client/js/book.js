@@ -1,47 +1,87 @@
+var tomorrow = moment().add(1, 'days');
+
 $(document).ready(async function () {
+	
 	// get shop code
 	var code = getShopCode();	
+	
 	// get shop data
 	var shop = await getShopDataByCode(code);
 	console.log(shop.id, shop.data());
+	$('#shop-name').text(shop.data().name);
+	$('#shop-address').text(shop.data().address);
 	
-	// listen to shop bookings and update schedule
-	listenBookings(shop);
-
-	// render page
-	renderPage(shop.data());
-	
+	// check that shop is open tomorrow
+	$('#schedule-date').text(moment(tomorrow).format("dddd Do MMMM YYYY"));
+	var hours = shop.data().hours[tomorrow.toLocaleString().slice(0,3).toLowerCase()];
+	if (hours == "closed") {
+		$(":button").removeClass('btn-primary').addClass('btn-secondary').addClass('disabled').text('Shop not open on that day');		
+	} else {
+		$('#shop-hours').text('Open ' + hours.open + ' to ' + hours.close);
+		// listen to shop bookings and generate/update schedule
+		listenBookings(shop);
+		
+		// on submit, add booking to wallet using a cookie containing the booking object
+		//$(":submit").submit(addToWallet(shop, schedule, ));
+		
+	}
 	
 });
 
-function renderPage(shop) {
-	$('#shop-name').text(shop.name);
-	$('#shop-address').text(shop.address);
+async function createBooking(shop, schedule, slot) {
 	
-	const today = new Date();
-	$('#todays-date').text(moment(today).format("dddd Do MMMM YYYY"));
-	var hours = shop.hours[today.toDateString().slice(0,3).toLowerCase()]
-	$('#shop-hours').text('Open ' + hours.open + ' to ' + hours.close);
+	// build booking object to send to database
+	var booking = schedule.find(row => row[0].time == slot).find(ticket => ticket.free == true);
+	booking.date = tomorrow.format("DD/MM/YYYY");
+	booking.shop = shop.id;
+	delete booking.free;
+	
+	// save previous ticket id then update selected slot value
+	var previous = $(':submit').prop('ticket');
+	$(':submit').prop('value', booking.time);
+	
+	// if a slot was selected before, delete previous booking
+	if (previous != undefined) {
+		await db.collection('tickets').doc(previous).delete();
+		console.log('deleted booking with id:', previous);
+	}
+		
+	// add new ticket to database
+	var doc = await db.collection('tickets').add(booking);
+	console.log("created booking with id:", doc.id);
+	
+	// update current ticket id
+	$(':submit').prop('ticket', doc.id);	
+		
+	return doc;
 }
 
-function renderSchedule(schedule){
+async function renderSchedule(schedule){
 	$('#schedule').empty();
 	schedule.forEach(function (slot) {
 		var count = slot.filter(booking => booking.free == false).length;
 		//console.log(slot[0].time, count, slot.length);
 		if (count == slot.length) {
-			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-2"><button type="button" class="btn btn-secondary disabled btn-lg">' + slot[0].time + '</button></div>');
+			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-2 btn-group-toggle"><label class="btn btn-outline-secondary disabled btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
 		} else if (count < slot.length && count > 0) {
-			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-2"><button type="button" class="btn btn-outline-warning btn-lg">' + slot[0].time + '</button></div>');
+			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-2 btn-group-toggle"><label class="btn btn-outline-warning btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
 		} else if (count == 0) {
-			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-2"><button type="button" class="btn btn-outline-success btn-lg">' + slot[0].time + '</button></div>');
+			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-2 btn-group-toggle"><label class="btn btn-outline-success btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
 		}
 	});
+	
+	// activate button currently reserved booking if the schedule is rendered after a delete operation
+	var reserved = $(':submit').val();
+	if (reserved != "") {
+		var slot = schedule.find(row => row.some(column => column.time == reserved))[0].time;
+		$('input[value="'+ slot +'"]').parent().addClass('active');
+		$('input[value="'+ slot +'"]').prop('checked', true);
+	}
 }
 
 function generateSchedule(shop, bookings) {
-	const today = new Date();
-	var hours = shop.data().hours[today.toDateString().slice(0,3).toLowerCase()];
+	// get revenant shop info
+	var hours = shop.data().hours[tomorrow.toLocaleString().slice(0,3).toLowerCase()];
 	var params = shop.data().bookings;
 	
 	// calculate number of slots during the day
@@ -62,45 +102,31 @@ function generateSchedule(shop, bookings) {
 	return schedule;
 }
 
-//async function getBookings(shopID) {
-//	
-//	// we are only interested in getting tomorrow's bookings
-//	const today = new Date();
-//	const tomorrow = new Date(today);
-//	tomorrow.setDate(tomorrow.getDate() + 1);
-//	
-//	// get bookings for specific shop on specific day
-//	var query = await db.collection('tickets').where('shop', '==', shopID).where('date', '==', tomorrow.toLocaleDateString()).get();
-//	if(query.empty) {
-//		console.log("No bookings found for this shop!");
-//		return [];
-//	} else {
-//		console.log("Found " + query.size.toString() + " bookings");
-//		return query.docs;
-//	}
-//}
-
 async function listenBookings(shop) {
 	
 	var schedule = new Array();
 	
-	// we are only interested in getting tomorrow's bookings
-	const today = new Date();
-	const tomorrow = new Date(today);
-	tomorrow.setDate(tomorrow.getDate() + 1);
-	
-	// get bookings for specific shop on specific day
-	await db.collection('tickets').where('shop', '==', shop.id).where('date', '==', tomorrow.toLocaleDateString()).onSnapshot(function (bookings) {
-		if(bookings.empty) {
-			console.log("No bookings found for this shop!");
-			schedule = generateSchedule(shop, []);
-		} else {
-			console.log("Found following bookings: ", bookings.docs);
-			schedule = generateSchedule(shop, bookings.docs);
+	// get shop's booking for tomorrow
+	await db.collection('tickets').where('shop', '==', shop.id).where('date', '==', tomorrow.format("DD/MM/YYYY")).onSnapshot(function (bookings) {
+		// only generate/update schedule if db notification comes from server
+		if(!bookings.metadata.hasPendingWrites) {
+			if(bookings.empty) {
+				console.log("No bookings found for this shop!");
+				schedule = generateSchedule(shop, []);
+			} else {
+				console.log("Found following bookings: ", bookings.docs);
+				schedule = generateSchedule(shop, bookings.docs);
+			}
+			renderSchedule(schedule);
+			
+			// attach new buttons to booking creation function
+			$("form").off('change').change(async function () {	
+				var slot = $('input[name=slot]:checked').val();
+				console.log("booking selected", slot);
+				var booking = await createBooking(shop, schedule, slot);
+			});
 		}
-		renderSchedule(schedule);
 	});
-
 }
 
 async function getShopDataByCode (code) {
@@ -159,12 +185,3 @@ function allLetters(input) {
 		return false;
 	}
 }
-
-//function range(min, max, step){
-//  let arr = [];
-//  for(let i = min; i <= max; i += step){
-//     arr.push(i);
-//  }
-//  
-//  return arr;
-//}

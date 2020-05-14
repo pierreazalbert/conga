@@ -90,101 +90,150 @@
 			</div>
 			
 			<div class="mb-4">
-				<div class="form-group row justify-content-start">
-					<label for="mon" class="col-12 col-md-2 col-form-label">Monday</label>
+				<div class="form-group row justify-content-start align-items-center">
+					<label for="mon" class="col-12 col-md-2 col-form-label font-weight-bold">Monday</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="mon-open" value="09:00">
+						<input type="time" step="900" class="form-control" id="mon-open" value="09:00" required>
 					</div>
 					
 					<label for="mon" class="col-auto col-form-label">to</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="mon-close" value="23:00">
+						<input type="time" step="900" class="form-control" id="mon-close" value="23:00" required>
+					</div>
+					
+					<div class="col-12 col-md-2 mt-2 mt-md-0">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="mon-closed">
+							<label class="custom-control-label" for="mon-closed">Closed</label>
+						</div>
 					</div>
 				</div>
 				
-				<div class="form-group row justify-content-start">
-					<label for="tue" class="col-12 col-md-2 col-form-label">Tuesday</label>
+				<div class="form-group row justify-content-start align-items-center">
+					<label for="tue" class="col-12 col-md-2 col-form-label font-weight-bold">Tuesday</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="tue-open" value="09:00">
+						<input type="time" step="900" class="form-control" id="tue-open" value="09:00" required>
 					</div>
 					
 					<label for="tue" class="col-auto col-form-label">to</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="tue-close" value="23:00">
+						<input type="time" step="900" class="form-control" id="tue-close" value="23:00" required>
+					</div>
+					
+					<div class="col-12 col-md-2 mt-2 mt-md-0">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="tue-closed">
+							<label class="custom-control-label" for="tue-closed">Closed</label>
+						</div>
 					</div>
 				</div>
 				
-				<div class="form-group row justify-content-start">
-					<label for="wed" class="col-12 col-md-2 col-form-label">Wednesday</label>
+				<div class="form-group row justify-content-start align-items-center">
+					<label for="wed" class="col-12 col-md-2 col-form-label font-weight-bold">Wednesday</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="wed-open" value="09:00">
+						<input type="time" step="900" class="form-control" id="wed-open" value="09:00" required>
 					</div>
 					
 					<label for="wed" class="col-auto col-form-label">to</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="wed-close" value="23:00">
+						<input type="time" step="900" class="form-control" id="wed-close" value="23:00" required>
+					</div>
+					
+					<div class="col-12 col-md-2 mt-2 mt-md-0">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="wed-closed">
+							<label class="custom-control-label" for="wed-closed">Closed</label>
+						</div>
 					</div>
 				</div>
 				
-				<div class="form-group row justify-content-start">
-					<label for="thu" class="col-12 col-md-2 col-form-label">Thursday</label>
+				<div class="form-group row justify-content-start align-items-center">
+					<label for="thu" class="col-12 col-md-2 col-form-label font-weight-bold">Thursday</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="thu-open" value="09:00">
+						<input type="time" step="900" class="form-control" id="thu-open" value="09:00" required>
 					</div>
 					
 					<label for="thu" class="col-auto col-form-label">to</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="thu-close" value="23:00">
+						<input type="time" step="900" class="form-control" id="thu-close" value="23:00" required>
+					</div>
+					
+					<div class="col-12 col-md-2 mt-2 mt-md-0">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="thu-closed">
+							<label class="custom-control-label" for="thu-closed">Closed</label>
+						</div>
 					</div>
 				</div>
 				
-				<div class="form-group row justify-content-start">
-					<label for="fri" class="col-12 col-md-2 col-form-label">Friday</label>
+				<div class="form-group row justify-content-start align-items-center">
+					<label for="fri" class="col-12 col-md-2 col-form-label font-weight-bold">Friday</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="fri-open" value="09:00">
+						<input type="time" step="900" class="form-control" id="fri-open" value="09:00" required>
 					</div>
 					
 					<label for="fri" class="col-auto col-form-label">to</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="fri-close" value="23:00">
+						<input type="time" step="900" class="form-control" id="fri-close" value="23:00" required>
+					</div>
+					
+					<div class="col-12 col-md-2 mt-2 mt-md-0">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="fri-closed">
+							<label class="custom-control-label" for="fri-closed">Closed</label>
+						</div>
 					</div>
 				</div>
 				
-				<div class="form-group row justify-content-start">
-					<label for="sat" class="col-12 col-md-2 col-form-label">Saturday</label>
+				<div class="form-group row justify-content-start align-items-center">
+					<label for="sat" class="col-12 col-md-2 col-form-label font-weight-bold">Saturday</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="sat-open" value="09:00">
+						<input type="time" step="900" class="form-control" id="sat-open" value="09:00" required>
 					</div>
 					
 					<label for="sat" class="col-auto col-form-label">to</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="sat-close" value="23:00">
+						<input type="time" step="900" class="form-control" id="sat-close" value="23:00" required>
+					</div>
+					
+					<div class="col-12 col-md-2 mt-2 mt-md-0">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="sat-closed">
+							<label class="custom-control-label" for="sat-closed">Closed</label>
+						</div>
 					</div>
 				</div>
 				
-				<div class="form-group row justify-content-start">
-					<label for="sun" class="col-12 col-md-2 col-form-label">Sunday</label>
+				<div class="form-group row justify-content-start align-items-center">
+					<label for="sun" class="col-12 col-md-2 col-form-label font-weight-bold">Sunday</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="sun-open" value="09:00">
+						<input type="time" step="900" class="form-control" id="sun-open" value="09:00" required>
 					</div>
 					
 					<label for="sun" class="col-auto col-form-label">to</label>
 					
 					<div class="col-5 col-md-2">
-						<input type="time" step="900" class="form-control" id="sun-close" value="23:00">
+						<input type="time" step="900" class="form-control" id="sun-close" value="23:00" required>
+					</div>
+					
+					<div class="col-12 col-md-2 mt-2 mt-md-0">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="sun-closed">
+							<label class="custom-control-label" for="sun-closed">Closed</label>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -200,7 +249,7 @@
 			<div class="form-group row justify-content-start">
 				<div class="col-12 mb-3">
 					<div class="row">
-						<label for="bookings" class="col-auto col-form-label">Accept</label>
+						<label for="bookings" class="col-auto col-form-label font-weight-bold">Accept</label>
 						
 						<select class="custom-select d-block col-2 col-md-2" id="number" required>
 							<option value=""></option>
@@ -226,13 +275,13 @@
 							<option value="10">10</option>
 						</select>
 						
-						<label for="bookings" class="col-auto col-form-label">bookings</label>
+						<label for="bookings" class="col-auto col-form-label font-weight-bold">bookings</label>
 					</div>
 				</div>
 				
 				<div class="col-12 mb-3">
 					<div class="row">
-						<label for="bookings" class="col-auto col-form-label">every</label>
+						<label for="bookings" class="col-auto col-form-label font-weight-bold">every</label>
 						
 						<select class="custom-select d-block col-2 col-md-2" id="rate" required>
 							<option value=""></option>
@@ -242,7 +291,7 @@
 							<option value="60" selected>60</option>
 						</select>
 						
-						<label for="bookings" class="col-auto col-form-label">minutes</label>
+						<label for="bookings" class="col-auto col-form-label font-weight-bold">minutes</label>
 					</div>
 				</div>
 			</div>
