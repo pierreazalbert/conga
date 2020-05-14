@@ -1,58 +1,65 @@
 var tomorrow = moment().add(1, 'days');
 
 $(document).ready(async function () {
-	
+
 	// get shop code
-	var code = getShopCode();	
-	
+	var code = getShopCode();
+
 	// get shop data
 	var shop = await getShopDataByCode(code);
 	console.log(shop.id, shop.data());
 	$('#shop-name').text(shop.data().name);
 	$('#shop-address').text(shop.data().address);
-	
+
 	// check that shop is open tomorrow
 	$('#schedule-date').text(moment(tomorrow).format("dddd Do MMMM YYYY"));
 	var hours = shop.data().hours[tomorrow.toLocaleString().slice(0,3).toLowerCase()];
 	if (hours == "closed") {
-		$(":button").removeClass('btn-primary').addClass('btn-secondary').addClass('disabled').text('Shop not open on that day');		
+		$(":button").removeClass('btn-primary').addClass('btn-secondary').addClass('disabled').text('Shop not open on that day');
 	} else {
 		$('#shop-hours').text('Open ' + hours.open + ' to ' + hours.close);
 		// listen to shop bookings and generate/update schedule
 		listenBookings(shop);
-		
+
 		// on submit, add booking to wallet using a cookie containing the booking object
 		//$(":submit").submit(addToWallet(shop, schedule, ));
-		
+
 	}
-	
+
 });
 
+function addToWallet(id, booking) {
+	Cookies.set(id, booking, {expires: 1});
+}
+
 async function createBooking(shop, schedule, slot) {
-	
+
 	// build booking object to send to database
 	var booking = schedule.find(row => row[0].time == slot).find(ticket => ticket.free == true);
 	booking.date = tomorrow.format("DD/MM/YYYY");
 	booking.shop = shop.id;
 	delete booking.free;
-	
+
 	// save previous ticket id then update selected slot value
 	var previous = $(':submit').prop('ticket');
 	$(':submit').prop('value', booking.time);
-	
+
 	// if a slot was selected before, delete previous booking
 	if (previous != undefined) {
 		await db.collection('tickets').doc(previous).delete();
 		console.log('deleted booking with id:', previous);
 	}
-		
+
 	// add new ticket to database
 	var doc = await db.collection('tickets').add(booking);
 	console.log("created booking with id:", doc.id);
-	
+
 	// update current ticket id
-	$(':submit').prop('ticket', doc.id);	
-		
+	$(':submit').prop('ticket', doc.id);
+
+	// detach old booking and attach new booking to submit event
+	$(':submit').off('submit').submit(addToWallet(doc.id, booking));
+
 	return doc;
 }
 
@@ -69,7 +76,7 @@ async function renderSchedule(schedule){
 			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-2 btn-group-toggle"><label class="btn btn-outline-success btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
 		}
 	});
-	
+
 	// activate button currently reserved booking if the schedule is rendered after a delete operation
 	var reserved = $(':submit').val();
 	if (reserved != "") {
@@ -83,10 +90,10 @@ function generateSchedule(shop, bookings) {
 	// get revenant shop info
 	var hours = shop.data().hours[tomorrow.toLocaleString().slice(0,3).toLowerCase()];
 	var params = shop.data().bookings;
-	
+
 	// calculate number of slots during the day
 	var slots_n = moment.duration(moment(hours.close, 'HH:mm')-moment(hours.open, 'HH:mm'))/moment.duration(params.rate, 'minutes');
-	
+
 	// generate empty schedule
 	var schedule = new Array(slots_n);
 	for (var i = 0; i < slots_n; i++) {
@@ -103,9 +110,9 @@ function generateSchedule(shop, bookings) {
 }
 
 async function listenBookings(shop) {
-	
+
 	var schedule = new Array();
-	
+
 	// get shop's booking for tomorrow
 	await db.collection('tickets').where('shop', '==', shop.id).where('date', '==', tomorrow.format("DD/MM/YYYY")).onSnapshot(function (bookings) {
 		// only generate/update schedule if db notification comes from server
@@ -118,9 +125,9 @@ async function listenBookings(shop) {
 				schedule = generateSchedule(shop, bookings.docs);
 			}
 			renderSchedule(schedule);
-			
+
 			// attach new buttons to booking creation function
-			$("form").off('change').change(async function () {	
+			$("form").off('change').change(async function () {
 				var slot = $('input[name=slot]:checked').val();
 				console.log("booking selected", slot);
 				var booking = await createBooking(shop, schedule, slot);

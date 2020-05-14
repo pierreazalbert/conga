@@ -1,5 +1,5 @@
 $(document).ready(async function() {
-	
+
 	// Listen for submit event
 	formValidation();
 	$('#setupForm').submit(event => submitForm(event));
@@ -28,7 +28,7 @@ function formValidation () {
 				event.preventDefault();
 				event.stopPropagation();
 			}
-			
+
 			form.classList.add('was-validated');
 		}, false);
 	});
@@ -36,7 +36,7 @@ function formValidation () {
 
 async function submitForm(event) {
 	event.preventDefault();
-	
+
 	// Get Values from the DOM
 	var shopName = $('#name').val();
 	var shopAddress = $('#address').val();
@@ -58,7 +58,7 @@ async function submitForm(event) {
 	var bookingRate = parseInt($('#rate').val());
 	var acceptMessages = $('#messages').prop('checked');
 	var shopEmail = $('#email').val();
-	
+
 	// Prepare object to send to database
 	var shopData = {
 		name: shopName,
@@ -79,21 +79,21 @@ async function submitForm(event) {
 		}
 	}
 	console.log(shopData);
-	
+
 	// Query database to collect all existing shop IDs
 	var shops = await db.collection("shops").get();
 	var previous = new Array();
 	shops.forEach(shop => previous.push(shop.data().code));
-	
+
 	// Generate unique shop ID
 	shopData.code = HashID.generateUnique(previous);
-	
+
 	// Write completed object to database
 	var docRef = await db.collection('shops').add(shopData).catch (function(error) {
 		console.error("Error adding document: ", error);
 		$('.btn').css('background-color', 'red').text('Registration failed');
 	});
-	
+
 	// Send email with login key to admin panel
 	$.ajax({
 		url: '/php/send-login-email.php',
@@ -113,8 +113,8 @@ async function submitForm(event) {
 			error: function (error) {
 			console.log("Error sending email");
 		}
-	});				
-		
+	});
+
 	//Form Reset After Submission(7)
 	//$('#setupForm').trigger('reset');
 }
