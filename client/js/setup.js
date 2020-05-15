@@ -1,37 +1,54 @@
 $(document).ready(async function() {
 
-	// Listen for submit event
-	formValidation();
-	$('#setupForm').submit(event => submitForm(event));
+	// Listen for submit event and check validity
+	//$('#setupForm').submit(event => submitForm(event);
+	$('input[type=time]').change(function () {
+		checkTimeInput(this);
+	});
+
+	$('input[type=email]').change(function () {
+		checkEmailInput(this);
+	});
+
+	$('#setupForm').submit(function (event) {
+		var form = this;
+		if (form.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+    } else {
+      //alert("your form is valid and ready to send");
+      submitForm(event);
+    }
+    // Add bootstrap 4 was-validated classes to trigger validation messages
+    $(form).addClass('was-validated');
+	});
+
 	//$("input[id$='closed']").change(console.log('checked'));
 	$(":checkbox").change(function () {
-		console.log(this);
+		//console.log(this);
 		$(this).parent().parent().parent().find("input[type='time']").prop('disabled', function(i, v) {
 			return!v;
 		});
 	});
 });
 
-function toggleHoursInput(input) {
-	input.parent().parent().parent().find("input[type='time']").prop('disabled', function(i, v) {
-		return!v;
-	});
+function checkEmailInput(input) {
+	var constraint = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+	console.log(input.value);
+	if (constraint.test(input.value)) {
+		input.setCustomValidity('');
+	} else {
+		input.setCustomValidity('Incorrect email');
+	}
 }
 
-function formValidation () {
-	// Fetch all the forms we want to apply custom Bootstrap validation styles to
-	var forms = $('needs-validation');
-	// Loop over them and prevent submission
-	var validation = Array.prototype.filter.call(forms, function(form) {
-		form.addEventListener('submit', function(event) {
-			if (form.checkValidity() === false) {
-				event.preventDefault();
-				event.stopPropagation();
-			}
-
-			form.classList.add('was-validated');
-		}, false);
-	});
+function checkTimeInput(input) {
+	var constraint = new RegExp("^([0-1][0-9]|[2][0-3]):([0-5][0-9])$");
+	if (constraint.test(input.value)) {
+		input.setCustomValidity('');
+	} else {
+		input.setCustomValidity('Incorrect time');
+	}
 }
 
 async function submitForm(event) {

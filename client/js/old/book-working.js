@@ -16,7 +16,7 @@ $(document).ready(async function () {
 	$('#schedule-date').text(moment(tomorrow).format("dddd Do MMMM YYYY"));
 	var hours = shop.data().hours[tomorrow.toLocaleString().slice(0,3).toLowerCase()];
 	if (hours == "closed") {
-		$(":button").text('Shop not open on that day');
+		$(":button").removeClass('btn-primary').addClass('btn-secondary').addClass('disabled').text('Shop not open on that day');
 	} else {
 		$('#shop-hours').text('Open ' + hours.open + ' to ' + hours.close);
 		// listen to shop bookings and generate/update schedule
@@ -54,31 +54,11 @@ async function createBooking(shop, schedule, slot) {
 	// update current ticket id
 	$(':submit').prop('ticket', doc.id);
 
-	// activate submit button
-	$(":submit").removeClass('btn-outline-secondary disabled').addClass('btn-primary').text("");
-
 	// detach old booking and attach new booking to submit event
 	$(':submit').off('click').click(function () {
 		Cookies.set(doc.id, booking, {expires: 2});
 		console.log('Added cookie with id:', doc.id);
-		window.location.href = 'index.html';
 	});
-
-	// reserve booking for 5mins
-	var expiry = 300; //5 min * 60 sec
-	var countdown = setInterval(async function (){
-		expiry -= 1;
-		var clock = moment(moment.duration(expiry, 'seconds').as('milliseconds')).format('mm:ss');
-		$(':submit').text("Confirm booking (" + clock + ")" );
-		if (expiry == 0) {
-			var reserved = $(':submit').prop('ticket');
-			await db.collection('tickets').doc(reserved).delete();
-			console.log('reservation expired - deleted booking with id:', reserved);
-			$(":submit").removeClass('btn-primary').addClass('btn-outline-secondary disabled').text('Pick a time for your visit');
-			clearInterval(countdown);
-			$(":input[value='" + slot +"']").prop('checked', false).parent().removeClass('active');
-		}
-	}, 1000);
 
 	return doc;
 }
