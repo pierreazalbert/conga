@@ -89,7 +89,6 @@ async function renderBookings(bookings){
 	var sorted = bookings.slice();
 	sorted.sort((a, b) => moment(a.data().time, 'HH:mm') - moment(b.data().time, 'HH:mm'));
 	sorted.forEach(function (ticket) {
-		console.log(ticket.data().color);
 		if (moment(ticket.data().time, 'HH:mm') < moment()) {
 			$('#all-bookings').append('<div class="col-4 col-xl-3 p-3 mb-2 d-flex justify-content-center"><label class="w-100 btn btn-outline-secondary nohover btn-lg">#' + ticket.data().time.replace(':', '') + '</label></div>');
 		} else {
@@ -102,16 +101,29 @@ async function renderBookings(bookings){
 	});
 
 	// create pdf to print Schedule
-	var pdf = new jsPDF({putOnlyUsedFonts: true});
+	makeSchedulePDF(sorted);
+}
+
+function makeSchedulePDF(bookings) {
+	var pdf = new jsPDF();
 	pdf.setFontSize(25);
-	pdf.text(today.format("dddd Do MMMM"), 30, 30);
+	pdf.text(today.format("dddd Do MMMM"), 20, 20);
 	pdf.setFontSize(20);
-	$('#all-bookings > > label').each(function (index) {
-		pdf.text($(this).text(), 30, 50+index*10);
+	var row = 0;
+	bookings.forEach(function (ticket, index) {
+		var column = index % 5;
+		pdf.setFillColor(ticket.data().color);
+		pdf.roundedRect(20+35*column, 30+20*row, 30, 15, 3, 3, "F");
+		pdf.setFontStyle("bold");
+		pdf.setTextColor(lightOrDark(ticket.data().color) ? 0:255);
+		pdf.text(ticket.data().time, 26+35*column, 40+20*row);
+		if ((column+1) % 5 == 0) {
+			row += 1;
+		}
 	});
 	$("button[name=print]").on('click', function () {
-		//pdf.save('schedule.pdf');
-		pdf.autoPrint();
+		pdf.save('schedule.pdf');
+		//pdf.autoPrint();
 	});
 }
 
@@ -186,7 +198,7 @@ function lightOrDark(color) {
     );
 
     // Using the HSP value, determine whether the color is light or dark
-    if (hsp>127.5) {
+    if (hsp>160) {
 
         return true;
     }
