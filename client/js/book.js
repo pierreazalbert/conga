@@ -1,4 +1,5 @@
 var tomorrow = moment().add(1, 'days');
+var countdown;
 Cookies.json = true;
 
 $(document).ready(async function () {
@@ -35,6 +36,8 @@ async function createBooking(shop, schedule, slot) {
 	var booking = schedule.find(row => row[0].time == slot).find(ticket => ticket.free == true);
 	booking.date = tomorrow.format("DD/MM/YYYY");
 	booking.shop = shop.id;
+	booking.color = '#' + Math.floor(Math.random()*16777215).toString(16);
+	console.log(booking.color);
 	delete booking.free;
 
 	// save previous ticket id then update selected slot value
@@ -55,7 +58,7 @@ async function createBooking(shop, schedule, slot) {
 	$(':submit').prop('ticket', doc.id);
 
 	// activate submit button
-	$(":submit").removeClass('btn-outline-secondary disabled').addClass('btn-primary').text("");
+	//$(":submit").removeClass('btn-outline-secondary disabled').addClass('btn-primary').text("");
 
 	// detach old booking and attach new booking to submit event
 	$(':submit').off('click').click(function () {
@@ -66,10 +69,11 @@ async function createBooking(shop, schedule, slot) {
 
 	// reserve booking for 5mins
 	var expiry = 300; //5 min * 60 sec
-	var countdown = setInterval(async function (){
+	clearInterval(countdown);
+	countdown = setInterval(async function (){
 		expiry -= 1;
 		var clock = moment(moment.duration(expiry, 'seconds').as('milliseconds')).format('mm:ss');
-		$(':submit').text("Confirm booking (" + clock + ")" );
+		$(':submit').removeClass('btn-outline-secondary disabled').addClass('btn-primary').text("Confirm booking (" + clock + ")" );
 		if (expiry == 0) {
 			var reserved = $(':submit').prop('ticket');
 			await db.collection('tickets').doc(reserved).delete();
@@ -84,11 +88,14 @@ async function createBooking(shop, schedule, slot) {
 }
 
 async function renderSchedule(schedule){
+	var selected = $('#schedule').find('.active').text();
 	$('#schedule').empty();
 	schedule.forEach(function (slot) {
 		var count = slot.filter(booking => booking.free == false).length;
-		//console.log(slot[0].time, count, slot.length);
-		if (count == slot.length) {
+		if (slot[0].time == selected) {
+			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-3 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-success btn-lg active"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
+			$('#schedule').find('.active').prop('checked', true);
+		} else if (count == slot.length) {
 			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-3 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-secondary disabled btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
 		} else if (count < slot.length && count > 0) {
 			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-3 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-warning btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');

@@ -41,9 +41,9 @@ $(document).ready(async function () {
 function renderLinks(shop) {
 	// copy link button
 	new ClipboardJS('#copy-link');
-	$("#copy-link").attr('data-clipboard-text', 'https://www.conga.store/book?shop=' + shop.data().code);
+	$("#copy-link").attr('data-clipboard-text', 'https://conga.store/book?shop=' + shop.data().code);
 	// qr code and pdf poster
-	var qrcode = new QRCode(document.getElementById("qrcode"), 'https://www.conga.store/book?shop=' + shop.data().code);
+	var qrcode = new QRCode(document.getElementById("qrcode"), 'https://conga.store/book?shop=' + shop.data().code);
 	$("#qrcode > img ").on('load', function() {
 		var pdf = new jsPDF();
 		pdf.setFontSize(40);
@@ -77,6 +77,8 @@ async function renderBookings(bookings){
 	if (moment(closest[0].data().time, 'HH:mm') >= moment()) {
 		$('#next-booking').parent().removeClass('d-none');
 		$('#next-booking').find('h1').text('#' + closest[0].data().time.replace(':', ''));
+		$('#next-booking').find('h1').parent().css('background-color', closest[0].data().color);
+		$('#next-booking').find('h1').addClass(lightOrDark(closest[0].data().color) ? 'text-dark':'text-white');
 	}
 
 	// $('button[name=next]').click(function (sorted) {
@@ -87,37 +89,31 @@ async function renderBookings(bookings){
 	var sorted = bookings.slice();
 	sorted.sort((a, b) => moment(a.data().time, 'HH:mm') - moment(b.data().time, 'HH:mm'));
 	sorted.forEach(function (ticket) {
-		console.log("ticket:", ticket.data().time);
-		console.log("closest:" , closest[0].data().time);
-		console.log(ticket.data().time == closest[0].data().time);
-		if (ticket.data().time == closest[0].data().time) {
-			console.log('here');
-			$('#all-bookings').append('<div class="col-4 col-xl-3 p-3 mb-2 d-flex justify-content-center"><label class="w-100 font-weight-bold btn btn-info nohover btn-lg text-white">#' + ticket.data().time.replace(':', '') + '</label></div>');
-		} else if (moment(ticket.data().time, 'HH:mm') < moment()) {
+		console.log(ticket.data().color);
+		if (moment(ticket.data().time, 'HH:mm') < moment()) {
 			$('#all-bookings').append('<div class="col-4 col-xl-3 p-3 mb-2 d-flex justify-content-center"><label class="w-100 btn btn-outline-secondary nohover btn-lg">#' + ticket.data().time.replace(':', '') + '</label></div>');
 		} else {
-			$('#all-bookings').append('<div class="col-4 col-xl-3 p-3 mb-2 d-flex justify-content-center"><label class="w-100 font-weight-bold btn btn-outline-dark nohover btn-lg">#' + ticket.data().time.replace(':', '') + '</label></div>');
+			if (ticket.data().time == closest[0].data().time) {
+				$('#all-bookings').append('<div class="col-4 col-xl-3 p-3 mb-2 d-flex justify-content-center"><label class="w-100 font-weight-bold btn nohover btn-outline-dark btn-lg" style="box-shadow: 0 0 0 5px ' + ticket.data().color + '; border-color: transparent">#' + ticket.data().time.replace(':', '') + '</label></div>');
+			}  else {
+				$('#all-bookings').append('<div class="col-4 col-xl-3 p-3 mb-2 d-flex justify-content-center"><label class="w-100 font-weight-bold btn btn-outline-dark nohover btn-lg">#' + ticket.data().time.replace(':', '') + '</label></div>');
+			}
 		}
 	});
-}
 
-// async function listenBookings(shop) {
-//
-// 	var schedule = new Array();
-//
-// 	// get shop's booking for tomorrow
-// 	await db.collection('tickets').where('shop', '==', shop.id).where('date', '==', today.format("DD/MM/YYYY")).onSnapshot(function (bookings) {
-//
-// 		if(bookings.empty) {
-// 			console.log("No bookings found for this shop!");
-// 			$('#all-bookings').empty().append('<div class="col-12 mb-2 d-flex justify-content-center"><label class="w-100 btn btn-outline-secondary nohover btn-lg">No bookings found for today</label></div>');
-// 		} else {
-// 			console.log("Found following bookings: ", bookings.docs);
-// 			renderBookings(bookings.docs);
-// 		}
-//
-// 	});
-// }
+	// create pdf to print Schedule
+	var pdf = new jsPDF({putOnlyUsedFonts: true});
+	pdf.setFontSize(25);
+	pdf.text(today.format("dddd Do MMMM"), 30, 30);
+	pdf.setFontSize(20);
+	$('#all-bookings > > label').each(function (index) {
+		pdf.text($(this).text(), 30, 50+index*10);
+	});
+	$("button[name=print]").on('click', function () {
+		//pdf.save('schedule.pdf');
+		pdf.autoPrint();
+	});
+}
 
 async function getShopData(id) {
 
@@ -155,3 +151,47 @@ var getParams = function (url) {
 	}
 	return params;
 };
+
+function lightOrDark(color) {
+
+    // Variables for red, green, blue values
+    var r, g, b, hsp;
+
+    // Check the format of the color, HEX or RGB?
+    if (color.match(/^rgb/)) {
+
+        // If HEX --> store the red, green, blue values in separate variables
+        color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+
+        r = color[1];
+        g = color[2];
+        b = color[3];
+    }
+    else {
+
+        // If RGB --> Convert it to HEX: http://gist.github.com/983661
+        color = +("0x" + color.slice(1).replace(
+        color.length < 5 && /./g, '$&$&'));
+
+        r = color >> 16;
+        g = color >> 8 & 255;
+        b = color & 255;
+    }
+
+    // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+    hsp = Math.sqrt(
+    0.299 * (r * r) +
+    0.587 * (g * g) +
+    0.114 * (b * b)
+    );
+
+    // Using the HSP value, determine whether the color is light or dark
+    if (hsp>127.5) {
+
+        return true;
+    }
+    else {
+
+        return false;
+    }
+}

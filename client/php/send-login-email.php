@@ -20,7 +20,7 @@
          <th>Usage</th><th>Link</th><th>Comments</th>
         </tr>
         <tr>
-         <td>Admin login</td><td>https://www.conga.store/admin?id=$id</td><td>Keep this link secret, it is your personal key to log into the Conga admin panel</td>
+         <td>Admin login</td><td>https://www.conga.store/admin?key=$id</td><td>Keep this link secret, it is your personal key to log into the Conga admin panel</td>
         </tr>
         <tr>
          <td>Public link</td><td>https://www.conga.store/book?shop=$code</td><td>This is the public link that your customers can use to book their visits to your shop, please share it!</td>
