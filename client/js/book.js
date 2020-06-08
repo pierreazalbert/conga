@@ -20,11 +20,17 @@ $(document).ready(async function () {
 		$(":button").text('Shop not open on that day');
 	} else {
 		$('#shop-hours').text('Open ' + hours.open + ' to ' + hours.close);
-		// listen to shop bookings and generate/update schedule
-		listenBookings(shop);
 
-		// on submit, add booking to wallet using a cookie containing the booking object
-		//$(":submit").submit(addToWallet(shop, schedule, ));
+		var bookings = Object.entries(Cookies.get());
+		// detect if user already has a booking for tomorrow
+		if (bookings.find(booking => (booking[1].shop == shop.id) && (booking[1].date == moment(tomorrow).format('DD/MM/YYYY'))) != undefined) {
+			//$("#schedule").text('You already have a booking for this day. You must cancel your existing booking before making a new one');
+			$(":button").text('You already have a booking for this day. Click here to go to your wallet').removeClass('disabled').attr('onclick', 'window.location="/index"');
+
+		} else {
+			// listen to shop bookings and generate/update schedule
+			listenBookings(shop);
+		}
 
 	}
 

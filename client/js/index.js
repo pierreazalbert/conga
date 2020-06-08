@@ -16,6 +16,19 @@ $(document).ready(async function () {
 			renderWallet();
 		});
 
+		$('#ticket-focus').on('show.bs.modal', function (event) {
+		  var ticket = $(event.relatedTarget); // Button that triggered the modal
+		  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+		  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+		  var modal = $(this);
+		  modal.find('#shop-name-focus').text(ticket.parent().find('#shop-name').text());
+		  modal.find('#ticket-date-focus').text(ticket.find('h6')[0].textContent);
+			modal.find('#ticket-time-focus').text(ticket.find('h6')[1].textContent);
+			modal.find('#ticket-number-focus').text(ticket.find('h1').text());
+			modal.css('background-color', ticket.css('background-color'));
+			modal.find('.modal-content').css('background-color', ticket.css('background-color'));
+		});
+
 });
 
 async function renderWallet() {
@@ -38,10 +51,12 @@ async function renderWallet() {
 
 		// only display bookings for tomorrow - others will expire in the background
 		if (booking.date == tomorrow.format("DD/MM/YYYY") || booking.date == today.format("DD/MM/YYYY")){ 
-			wallet.append('<div class="col-sm-12 col-md-6 mb-5"><h4 class="pb-3" id="shop-name">' + shop.data().name + '</h4><div class="card border-light ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + ' text-center" style="background-color:' + booking.color + '"><div class="card-body"><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:left">' + moment(booking.date, "DD/MM/YYYY").format("dddd Do MMMM YYYY") + '</h6><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:right">' + booking.time + '</h6><div style="clear: both;"></div><h1 class="card-title display-4 font-weight-bold mt-3">#' + booking.time.replace(':', '') + '</h1></div></div><button type="button" name="cancel" class="btn btn-secondary w-100 my-2" booking="' + id + '">Cancel booking</button></div>');
+			wallet.append('<div class="col-sm-12 col-md-6 mb-5"><h4 class="pb-3" id="shop-name">' + shop.data().name + '</h4><div class="card border-light ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + ' text-center" style="background-color:' + booking.color + '" data-toggle="modal" data-target="#ticket-focus"><div class="card-body"><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:left">' + moment(booking.date, "DD/MM/YYYY").format("dddd Do MMMM") + '</h6><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:right">' + booking.time + '</h6><div style="clear: both;"></div><h1 class="card-title display-4 font-weight-bold mt-3">#' + booking.time.replace(':', '') + '</h1></div></div><button type="button" name="cancel" class="btn btn-secondary w-100 my-2" booking="' + id + '">Cancel booking</button></div>');
 		}
 
 	});
+
+
 
 }
 
