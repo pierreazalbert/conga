@@ -33,8 +33,6 @@ $(document).ready(async function () {
 
 async function renderWallet() {
 
-
-
 	// => NEED TO SORT BOOKINGS BY DATE AND TIME!
 	var cookies = Cookies.get();
 	var sorted = Object.entries(cookies);
@@ -43,17 +41,28 @@ async function renderWallet() {
 
 	var wallet = $("#wallet");
 	wallet.empty();
-	$.each(Object.fromEntries(sorted), async function (id, booking) {
-
-		console.log(id, booking);
-
-		var shop = await db.collection('shops').doc(booking.shop).get();
-
+	$.each(Object.fromEntries(sorted), async function (id, data) {
 		// only display bookings for tomorrow - others will expire in the background
-		if (booking.date == tomorrow.format("DD/MM/YYYY") || booking.date == today.format("DD/MM/YYYY")){ 
-			wallet.append('<div class="col-sm-12 col-md-6 mb-5"><h4 class="pb-3" id="shop-name">' + shop.data().name + '</h4><div class="card border-light ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + ' text-center" style="background-color:' + booking.color + '" data-toggle="modal" data-target="#ticket-focus"><div class="card-body"><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:left">' + moment(booking.date, "DD/MM/YYYY").format("dddd Do MMMM") + '</h6><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:right">' + booking.time + '</h6><div style="clear: both;"></div><h1 class="card-title display-4 font-weight-bold mt-3">#' + booking.time.replace(':', '') + '</h1></div></div><button type="button" name="cancel" class="btn btn-secondary w-100 my-2" booking="' + id + '">Cancel booking</button></div>');
+		if (data.date == tomorrow.format("DD/MM/YYYY") || data.date == today.format("DD/MM/YYYY")){ 
+			console.log(id, data);
+			var shop = await db.collection('shops').doc(data.shop).get();
+			wallet.append('<div class="col-sm-12 col-md-6 mb-5"><h4 class="pb-3" id="shop-name">' + shop.data().name + '</h4><div class="card border-light ' + (lightOrDark(data.color) ? 'text-dark':'text-white') + ' text-center" style="background-color:' + data.color + '" data-toggle="modal" data-target="#ticket-focus"><div class="card-body"><h6 class="card-subtitle mb-2 ' + (lightOrDark(data.color) ? 'text-dark':'text-white') + '" style="float:left">' + moment(data.date, "DD/MM/YYYY").format("dddd Do MMMM") + '</h6><h6 class="card-subtitle mb-2 ' + (lightOrDark(data.color) ? 'text-dark':'text-white') + '" style="float:right">' + data.time + '</h6><div style="clear: both;"></div><h1 class="card-title display-4 font-weight-bold mt-3">#' + data.time.replace(':', '') + '</h1></div></div><button type="button" name="cancel" class="btn btn-secondary w-100 my-2" booking="' + id + '">Cancel booking</button></div>');
 		}
+	});
 
+	var favourites = $('#favourites');
+	favourites.empty();
+	$.each(cookies, function(id, data) {
+		if ((data.address != undefined) && (sorted.find(item => item[1].shop == id) == undefined)) {
+			console.log(id, data);
+			favourites.append('<div class="col-sm-12 col-md-6 mb-5"><h4 class="pb-3" id="shop-name">' + data.name + '</h4><button type="button" name="book" code="' + data.code + '" class="btn btn-secondary w-100 mb-2">Make booking</button></h4><button type="button" name="forget" id="' + id + '" class="btn btn-secondary w-100 mb-2">Remove favourite</button></div>');
+			$(':button[code=' + data.code + ']').attr('onclick', 'window.location="/book?shop=' + data.code + '"');
+			$(':button[id=' + id + ']').click(function() {
+				Cookies.remove(id);
+				console.log('deleted cookie with id:', id);
+				renderWallet();
+			})
+		}
 	});
 
 
@@ -93,7 +102,6 @@ function lightOrDark(color) {
     0.114 * (b * b)
     );
 
-		console.log(color, hsp);
     // Using the HSP value, determine whether the color is light or dark
     if (hsp>160) {
 

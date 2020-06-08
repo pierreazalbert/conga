@@ -69,6 +69,7 @@ async function createBooking(shop, schedule, slot) {
 	// detach old booking and attach new booking to submit event
 	$(':submit').off('click').click(function () {
 		Cookies.set(doc.id, booking, {expires: 2});
+		Cookies.set(shop.id, shop.data(), {expires:365});
 		console.log('Added cookie with id:', doc.id);
 		window.location.href = 'index.html';
 	});
