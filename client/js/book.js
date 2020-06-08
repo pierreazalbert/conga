@@ -173,8 +173,8 @@ async function listenBookings(shop) {
 async function getShopDataByCode (code) {
 	var query = await db.collection('shops').where("code", "==", code).get();
 	if(query.empty) {
-		throw new Error ("Error getting shop data: no shop found");
-		window.location.href = 'index.html';
+		//throw new Error ("Error getting shop data: no shop found");
+		window.location.href = '/index.html';
 	} else {
 		var data = query.docs[0];
 		return data;
