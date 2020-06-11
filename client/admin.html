@@ -46,6 +46,8 @@
 
     <style>
 
+
+
 		.nohover {
     pointer-events: none;
 }
@@ -79,10 +81,10 @@
 		<div class="row">
 
 			<div class="col-12 col-lg-6 px-lg-5 d-none">
-				<div class="row mb-5" id="next-booking">
+				<div class="row mb-5" id="queue-status">
 					<div class="col-12">
 						<ul class="list-inline d-flex justify-content-between align-items-center">
-							<h4 class="list-inline-item">Next booking</h4>
+							<h4 class="list-inline-item">Queue status</h4>
 				  		<h4 class="list-inline-item text-muted" name="today"></h4>
 						</ul>
 					</div>
@@ -90,7 +92,15 @@
 						<div class="card border-light text-center">
 							<h1 class="card-title display-4 font-weight-bold mt-3">#0000</h1>
 						</div>
-						<button type="button" name="next" class="btn btn-lg btn-secondary my-2 w-100">Next customer</button>
+						<!-- <button type="button" name="next" class="btn btn-lg btn-secondary my-2 w-100">Next customer</button> -->
+						<div id="toggle-queue" class="btn-group btn-group-toggle my-3 w-100" data-toggle="buttons">
+						  <label class="btn btn-lg btn-outline-secondary">
+						    <input type="radio" name="options" id="next-booking"> Wait for next booking
+						  </label>
+						  <label class="btn btn-lg btn-outline-secondary">
+						    <input type="radio" name="options" id="next-customer"> Call next customer
+						  </label>
+					</div>
 					</div>
 				</div>
 			</div>
@@ -113,7 +123,7 @@
 			</div>
 
 			<div class="col-12 col-lg-6 px-lg-5">
-				<dl class="row mb-5" id="shop-settings">
+				<dl class="row" id="shop-settings">
 					<h4 class="col-12 pb-2">Shop settings</h4>
 					<dt class="col-3 mb-1">Name</dt>
 					<dd class="col-9" id="name"></dd>
@@ -141,6 +151,7 @@
 					<dt class="col-3 mb-1">Options</dt>
 					<dd class="col-9" id="options"></dd>
 				</dl>
+				<button type="button" name="settings" class="btn btn-lg btn-secondary mb-5 w-100">Edit shop settings</button>
 			</div>
 
 			<div class="col-12 col-lg-6 px-lg-5">
