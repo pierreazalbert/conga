@@ -100,14 +100,14 @@ async function renderSchedule(schedule){
 	schedule.forEach(function (slot) {
 		var count = slot.filter(booking => booking.free == false).length;
 		if (slot[0].time == selected) {
-			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-3 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-success btn-lg active"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
+			$('#schedule').append('<div class="col-4 col-md-2 p-2 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-success btn-lg active"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
 			$('#schedule').find('.active').prop('checked', true);
 		} else if (count == slot.length) {
-			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-3 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-secondary disabled btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
+			$('#schedule').append('<div class="col-4 col-md-2 p-2 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-secondary disabled btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
 		} else if (count < slot.length && count > 0) {
-			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-3 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-warning btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
+			$('#schedule').append('<div class="col-4 col-md-2 p-2 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-warning btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
 		} else if (count == 0) {
-			$('#schedule').append('<div class="col-4 col-md-2 p-3 my-3 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-success btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
+			$('#schedule').append('<div class="col-4 col-md-2 p-2 btn-group-toggle d-flex justify-content-center"><label class="w-100 btn btn-outline-success btn-lg"><input type="radio" name="slot" value="' + slot[0].time + '" autocomplete="off">' + slot[0].time + '</label></div>');
 		}
 	});
 

@@ -61,25 +61,28 @@
 </head>
 <body class="bg-light">
 	<div class="container">
-		<div class="py-5 text-center">
-			<img class="d-block mx-auto mb-4" src="/assets/ticket.svg" alt="" width="72" height="72">
+		<div class="pt-2 pb-4 text-center">
+			<img class="d-block mx-auto mb-3" src="/assets/calendar.svg" alt="" width="150">
 
-			<h2 class="pb-3" id="shop-name"></h2>
+			<h4 class="pb-2 font-weight-bold" id="shop-name"></h2>
 			<h6 class="text-muted pb-4" id='shop-address'></h6>
 
-			<p class="lead mx-5">Bookings are only allowed on the day before your visit. If no slots are available you can still walk-in, or wait until the next day.</p>
+			<p>Bookings are only allowed for the next day. You can still walk-in without a booking.</p>
 		</div>
 
 		<div class="mb-4">
-			<h4 id='schedule-date'></h4>
+			<h5 id='schedule-date'></h4>
 			<h6 class="text-muted" id='shop-hours'></h6>
 		</div>
 
-		<form class="row mb-4 btn-group" data-toggle="buttons" id="schedule">
+		<form class="row mb-5 pb-5 px-2 btn-group" data-toggle="buttons" id="schedule">
 
 		</form>
 
-		<button class="btn btn-outline-secondary disabled btn-lg btn-block mb-5" type="submit">Pick a time for your visit</button>
+		<div class="row fixed-bottom p-3 bg-light">
+			<button class="btn btn-outline-secondary disabled btn-lg btn-block mx-3" type="submit">Pick a time for your visit</button>
+		</div>
+
 	</div>
 </body>
 </html>
