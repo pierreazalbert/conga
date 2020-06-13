@@ -93,7 +93,8 @@ async function submitForm(event) {
 			number: bookingNumber,
 			rate: bookingRate,
 			messages: acceptMessages
-		}
+		},
+		status: 'auto'
 	}
 	console.log(shopData);
 
@@ -124,7 +125,7 @@ async function submitForm(event) {
 			console.log("Email successfully sent");
 			$('form').hide();
 			$('.alert > p > a').attr("href", "https://www.conga.store/admin?key=" + docRef.id);
-			$('.alert > p:eq(1)').text("Your shop's 4 letter code is " + shopData.code + " and this is your public booking link: https://www.conga.store/book?shop=" + shopData.code);
+			$('.alert > p:eq(1)').text("Your shop's 4 letter code is " + shopData.code + " and this is your public booking link: conga.store/" + shopData.code);
 			$('.alert').show();
 		},
 			error: function (error) {
