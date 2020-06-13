@@ -14,6 +14,23 @@ firebase.initializeApp(firebaseConfig);
 // Initialise Cloud Firestore
 var db = firebase.firestore();
 
+async function getShopData(id) {
+
+	try {
+		var shop = await db.collection("shops").doc(id).get();
+		if (shop.exists) {
+				console.log("Shop data:", shop.data());
+				return shop;
+		} else {
+				// doc.data() will be undefined in this case
+				console.log("No shop found!");
+				window.location.href = 'index.html';
+		}
+	} catch (error) {
+		console.log("Error getting shop data:", error);
+		window.location.href = 'index.html';
+	}
+}
 
 function lightOrDark(color) {
 
@@ -58,3 +75,22 @@ function lightOrDark(color) {
         return false;
     }
 }
+
+/**
+ * Get the URL parameters
+ * source: https://css-tricks.com/snippets/javascript/get-url-variables/
+ * @param  {String} url The URL
+ * @return {Object}     The URL parameters
+ */
+var getParams = function (url) {
+	var params = {};
+	var parser = document.createElement('a');
+	parser.href = url;
+	var query = parser.search.substring(1);
+	var vars = query.split('&');
+	for (var i = 0; i < vars.length; i++) {
+		var pair = vars[i].split('=');
+		params[pair[0]] = decodeURIComponent(pair[1]);
+	}
+	return params;
+};
