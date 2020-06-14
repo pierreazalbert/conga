@@ -10,8 +10,23 @@ $(document).ready(async function () {
 	// get shop data
 	var shop = await getShopDataByCode(code);
 	console.log(shop.id, shop.data());
-	$('#shop-name').text(shop.data().name);
+	$('#shop-name').prepend(shop.data().name);
 	$('#shop-address').text(shop.data().address);
+
+	// favourite shop Function
+	if (Object.entries(Cookies.get()).find(item => item[0] == shop.id) != undefined) {
+		$('img[title=favourite]').attr('src', '/assets/heart-fill.svg');
+	}
+	$('img[title=favourite]').click(function(){
+		if($(this).attr('src') == "/assets/heart.svg") {
+			Cookies.set(shop.id, shop.data(), {expires:365});
+			$(this).attr('src', '/assets/heart-fill.svg');
+		}
+		else if ($(this).attr('src') == "/assets/heart-fill.svg") {
+			Cookies.remove(shop.id);
+			$(this).attr('src', '/assets/heart.svg');
+		}
+	});
 
 	// check that shop is open tomorrow
 	$('#schedule-date').text(moment(tomorrow).format("dddd Do MMMM YYYY"));

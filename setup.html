@@ -52,48 +52,48 @@
     <!-- Custom styles for this template -->
     <!--<link href="form-validation.css" rel="stylesheet">-->
 </head>
+
 <body class="bg-light">
+
 	<div class="container">
+
 		<div class="pt-2 pb-5 text-center">
 			<img class="d-block mx-auto mb-3" src="/assets/register.svg" alt="" width="150">
-
-			<h4 class="pb-2 font-weight-bold">Register your shop</h2>
-
+			<h4 class="pb-2 font-weight-bold">Register your shop</h4>
 			<p>Welcome to Conga, the simple and intuitive booking system that can help you manage customer affluence in your store.</p>
 		</div>
 
 		<form id="setupForm" method="POST" class="needs-validation" novalidate>
-			<div class="mb-4">
-				<h4>Shop information</h4>
 
+			<div class="mb-4">
+				<h5>Shop information</h5>
 				<h6 class="text-muted">This will appear on your shop's public booking page.</h6>
 			</div>
 
-			<div class="mb-3">
-				<label for="name">Shop name</label>
+			<div class="form-group row mb-3">
+    		<label for="name" class="col-md-2 col-form-label font-weight-bold">Shop name</label>
+    		<div class="col-md-10">
+					<input type="text" class="form-control" id="name" placeholder="Waitrose Old Brompton Road" required>
+					<div class="invalid-feedback">Shop name is required</div>
+    		</div>
+  		</div>
 
-				<input type="text" class="form-control" id="name" placeholder="Waitrose Old Brompton Road" required>
-
-				<div class="invalid-feedback">Shop name is required</div>
-			</div>
-
-			<div class="mb-3">
-				<label for="address">Address</label>
-
-				<input type="text" class="form-control" id="address" placeholder="93 Old Brompton Road SW72ZT London" required>
-
-				<div class="invalid-feedback">Please enter your shop's address.</div>
-			</div>
+			<div class="form-group row mb-3">
+    		<label for="address" class="col-md-2 col-form-label font-weight-bold">Address</label>
+    		<div class="col-md-10">
+					<input type="text" class="form-control" id="address" placeholder="93 Old Brompton Road SW72ZT London" required>
+					<div class="invalid-feedback">Please enter your shop's address.</div>
+    		</div>
+  		</div>
 
 			<hr class="my-4">
 
 			<div class="mb-4">
-				<h4>Opening times</h4>
-
-				<h6 class="text-muted">If your shop is closed on a particular day please enter 00:00 to 00:00.</h6>
+				<h5>Opening times</h5>
 			</div>
 
 			<div class="mb-4">
+
 				<div class="form-group row justify-content-start align-items-center">
 					<label for="mon" class="col-12 col-md-2 col-form-label font-weight-bold">Monday</label>
 
@@ -246,39 +246,26 @@
 
 			<div class="mb-4">
 				<h4>Booking parameters</h4>
-
 				<h6 class="text-muted">Don't worry, you will be able to edit this later in you administrator panel if you need to change anything.</h6>
 			</div>
 
 			<div class="form-group row justify-content-start">
+
 				<div class="col-12 mb-3">
 					<div class="row">
 						<label for="bookings" class="col-auto col-form-label font-weight-bold">Accept</label>
-
 						<select class="custom-select d-block col-2 col-md-2" id="number" required>
-							<option value=""></option>
-
 							<option value="1">1</option>
-
 							<option value="2" selected>2</option>
-
 							<option value="3">3</option>
-
 							<option value="4">4</option>
-
 							<option value="5">5</option>
-
 							<option value="6">6</option>
-
 							<option value="7">7</option>
-
 							<option value="8">8</option>
-
 							<option value="9">9</option>
-
 							<option value="10">10</option>
 						</select>
-
 						<label for="bookings" class="col-auto col-form-label font-weight-bold">bookings</label>
 					</div>
 				</div>
@@ -286,43 +273,35 @@
 				<div class="col-12 mb-3">
 					<div class="row">
 						<label for="bookings" class="col-auto col-form-label font-weight-bold">every</label>
-
 						<select class="custom-select d-block col-2 col-md-2" id="rate" required>
-							<option value=""></option>
-
 							<option value="30">30</option>
-
 							<option value="60" selected>60</option>
 						</select>
-
 						<label for="bookings" class="col-auto col-form-label font-weight-bold">minutes</label>
 					</div>
 				</div>
+
 			</div>
 
-			<div class="custom-control custom-checkbox">
+			<div class="custom-control custom-checkbox d-none">
 				<input type="checkbox" class="custom-control-input" id="messages" disabled>
-
 				<label class="custom-control-label" for="messages">Allow customers to attach personal messages to their bookings.</label>
 			</div>
-
-
 
 			<hr class="mb-4">
 
 			<div class="mb-4">
 				<h4>Security</h4>
-
 				<h6 class="text-muted">We don't save your email in our records. It is only used once to send you a secret login link.</h6>
 			</div>
 
-			<div class="mb-3">
-				<label for="email">Shop email address</label>
-
-				<input type="email" class="form-control" id="email" placeholder="shopname@example.com" required>
-
-				<div class="invalid-feedback">Please enter a valid email address to receive your secret login link.</div>
-			</div>
+			<div class="form-group row mb-3">
+    		<label for="email" class="col-md-2 col-form-label font-weight-bold">Shop email</label>
+    		<div class="col-md-10">
+					<input type="email" class="form-control" id="email" placeholder="shopname@example.com" required>
+					<div class="invalid-feedback">Please enter a valid email address to receive your secret login link.</div>
+    		</div>
+  		</div>
 
 			<hr class="mb-4">
 
@@ -341,7 +320,6 @@
 
 	<footer class="my-5 pt-5 text-muted text-center text-small">
 		<p class="mb-1">&copy; 2020 Conga.store Ltd</p>
-
 		<!-- <ul class="list-inline">
 			<li class="list-inline-item"><a href="#">Privacy</a></li>
 		      <li class="list-inline-item"><a href="#">Terms</a></li>

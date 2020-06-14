@@ -15,6 +15,7 @@ $(document).ready(async function () {
 	if(bookings.empty) {
 		console.log("No bookings found for this shop!");
 		$('#all-bookings').empty().append('<div class="col-12 mb-2 d-flex justify-content-center"><label class="w-100 btn btn-outline-secondary nohover btn-lg">No bookings found for today</label></div>');
+		$(':button[name=print]').hide();
 	} else {
 		console.log("Found following bookings: ", bookings.docs);
 		var sorted = bookings.docs.slice();
@@ -36,12 +37,12 @@ $(document).ready(async function () {
 
 	}
 
+	// toggle function to control queue mode (auto vs manual)
 	$("#toggle-queue").change(async function (event) {
 		if($(':checked').attr('id') == 'next-booking') {
 			console.log('Switching to automatic queue control');
 			shop = await updateShopQueueStatus(shop, 'auto');
 			// switch to auto mode
-
 			renderQueue(shop.data(), sorted);
 			renderBookings(sorted);
 
@@ -50,33 +51,140 @@ $(document).ready(async function () {
 				renderBookings(sorted);
 			}, 10000);
 
-
-
 		} else if ($(':checked').attr('id') == 'next-customer') {
 			console.log('Switching to manual queue control');
 			shop = await updateShopQueueStatus(shop, 'manual');
 			// if button was inactive, activate manual mode
 			renderQueue(shop.data(), sorted);
 			clearInterval(update);
-
 		}
 	});
 
 	// render shop settings
-	$('#shop-settings > #name').text(shop.data().name);
-	$('#shop-settings > #address').text(shop.data().address);
-	$.each(shop.data().hours, function(day, hours) {
-		if (hours == "closed") {
-			$('#shop-settings > #hours > > #' + day).text("Closed");
-		} else {
-			$('#shop-settings > #hours > > #' + day).text(hours.open + ' to ' + hours.close);
-		}
+	renderShopSettings(shop);
+
+	$(':button[name=settings]').click(function () {
+
+		$('#shop-settings').load('setup.html form', function () {
+
+			// layout adjustments & removing unused sections
+			$('#shop-settings').addClass('mb-5');
+			$('form > :submit').text('Save shop settings');
+			$('form').find('#email').parent().parent().remove();
+			$('form').find('#email').parent().parent().prev().remove();
+			$('form').find('#email').parent().parent().next().remove();
+			$('form').find('.text-muted').remove();
+			$(":checkbox").change(function () {
+				$(this).parent().parent().parent().find("input[type='time']").prop('disabled', function(i, v) {
+					return!v;
+				});
+			});
+
+			// fill up form with current shop settings
+			$('form').find('#name').val(shop.data().name);
+			$('form').find('#address').val(shop.data().address);
+			$.each(shop.data().hours, function(day, hours) {
+				if (hours == "closed") {
+					$('form').find('#' + day + '-closed').click();
+				} else {
+					$('form').find('#' + day + '-open').val(hours.open);
+					$('form').find('#' + day + '-close').val(hours.close);
+				}
+			});
+			$('form').find('#number').val(shop.data().bookings.number);
+			$('form').find('#rate').val(shop.data().bookings.rate);
+
+			// form validation & Submission
+			$('input[type=time]').change(function () {
+				checkTimeInput(this);
+			});
+			$('#setupForm').submit(function (event) {
+				var form = this;
+				if (form.checkValidity() === false) {
+		      event.preventDefault()
+		      event.stopPropagation()
+		    } else {
+		      //alert("your form is valid and ready to send");
+		      updateShopSettings(event, shop);
+		    }
+		    // Add bootstrap 4 was-validated classes to trigger validation messages
+		    $(form).addClass('was-validated');
+			});
+
+
+		});
+
 	});
-	$('#shop-settings > #options').text("Accepting " + shop.data().bookings.number + " bookings every " + shop.data().bookings.rate + " minutes.");
 
 	// render booking link section
 	renderLinks(shop);
 });
+
+async function updateShopSettings(event, shop) {
+	event.preventDefault();
+
+	// Get Values from the DOM
+	var shopName = $('#name').val();
+	var shopAddress = $('#address').val();
+	var monOpen = $('#mon-open').val();
+	var monClose = $('#mon-close').val();
+	var tueOpen = $('#tue-open').val();
+	var tueClose = $('#tue-close').val();
+	var wedOpen = $('#wed-open').val();
+	var wedClose = $('#wed-close').val();
+	var thuOpen = $('#thu-open').val();
+	var thuClose = $('#thu-close').val();
+	var friOpen = $('#fri-open').val();
+	var friClose = $('#fri-close').val();
+	var satOpen = $('#sat-open').val();
+	var satClose = $('#sat-close').val();
+	var sunOpen = $('#sun-open').val();
+	var sunClose = $('#sun-close').val();
+	var bookingNumber = parseInt($('#number').val());
+	var bookingRate = parseInt($('#rate').val());
+
+	// Prepare object to send to database
+	var shopData = {
+		name: shopName,
+		address: shopAddress,
+		hours: {
+			mon: $('#mon-closed').prop('checked') ? "closed" : {open: monOpen, close: monClose},
+			tue: $('#tue-closed').prop('checked') ? "closed" : {open: tueOpen, close: tueClose},
+			wed: $('#wed-closed').prop('checked') ? "closed" : {open: wedOpen, close: wedClose},
+			thu: $('#thu-closed').prop('checked') ? "closed" : {open: thuOpen, close: thuClose},
+			fri: $('#fri-closed').prop('checked') ? "closed" : {open: friOpen, close: friClose},
+			sat: $('#sat-closed').prop('checked') ? "closed" : {open: satOpen, close: satClose},
+			sun: $('#sun-closed').prop('checked') ? "closed" : {open: sunOpen, close: sunClose}
+		},
+		bookings: {
+			number: bookingNumber,
+			rate: bookingRate,
+		}
+	}
+	console.log(shopData);
+
+	// Write completed object to database
+	var docRef = await db.collection('shops').doc(shop.id).update(shopData).then(function () {
+		location.reload();
+	}).catch(function(error) {
+		console.error("Error updating shop settings: ", error);
+		$('.btn').css('background-color', 'red').text('Shop settings update failed');
+	});
+
+}
+
+function renderShopSettings(shop) {
+	$('#shop-settings > > #name').text(shop.data().name);
+	$('#shop-settings > > #address').text(shop.data().address);
+	$.each(shop.data().hours, function(day, hours) {
+		if (hours == "closed") {
+			$('#shop-settings > > #hours > > #' + day).text("Closed");
+		} else {
+			$('#shop-settings > > #hours > > #' + day).text(hours.open + ' to ' + hours.close);
+		}
+	});
+	$('#shop-settings > > #options').text("Accepting " + shop.data().bookings.number + " bookings every " + shop.data().bookings.rate + " minutes.");
+}
 
 async function updateShopQueueStatus(shop, status) {
 
