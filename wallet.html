@@ -9,7 +9,7 @@
 
 	<meta name="author" content="Florian Dussopt & Pierre Azalbert">
 
-	<title>Conga - Home</title>
+	<title>Conga - Wallet</title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -26,7 +26,7 @@
 	<!--JS Functions -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment-with-locales.min.js" type="text/javascript"></script>
 	<script src="/js/lib/js.cookie.min.js"></script>
-	<script src="/js/index.js"></script>
+	<script src="/js/wallet.js"></script>
 	<link rel="stylesheet" href="/conga.css">
 
 	<!-- Favicons -->
@@ -45,14 +45,19 @@
 
 </head>
 
-<body class="bg-light">
+<body class="bg-conga">
 	<div class="container">
-		<div class="pt-2 pb-5 text-center">
-			<img class="d-block mx-auto mb-3" src="/assets/queue.svg" alt="" width="150">
-
-			<h4 class="pb-2 font-weight-bold">Your bookings</h2>
-
-			<p>We use cookies to store your bookings, completely anonymously.</p>
+		<div class="pt-2 pb-5 pb-lg-0">
+			<a href="index.html"><img class="d-block mx-auto mt-3" src="/assets/logo.svg" alt="" width="125"></a>
+			<div class="row align-items-center justify-content-between">
+				<div class="col-12 col-lg-7 align-self-center text-center text-lg-left">
+					<h3 class="pb-1 pb-lg-0 font-weight-bold">My bookings</h3>
+					<p class="text-muted small">We do not collect data and use anonymous cookies to save your bookings on your own device.</p>
+				</div>
+				<div class="col-6 mx-auto mx-lg-0 order-first order-lg-last col-lg-4">
+					<img src="/assets/calendar.svg" alt="">
+				</div>
+			</div>
 		</div>
 
 		<div class="row" id="wallet">
@@ -84,6 +89,46 @@
 					<h2 class="display-3 text-center invisible" id="your-turn">IT IS YOUR TURN</h2>
 				</div>
 
+			</div>
+		</div>
+	</div>
+</div>
+<footer class="m-5 pt-5 text-muted text-center text-small">
+	<ul class="list-inline my-5">
+		<li class="list-inline-item"><a class="text-reset" data-toggle="modal" data-target="#contact">Contact</a></li>
+		<li class="list-inline-item"><a class="text-reset" data-toggle="modal" data-target="#credits">Credits</a></li>
+	</ul>
+</footer>
+<!-- Modal -->
+<div class="modal fade" id="contact" tabindex="-1" role="dialog" aria-labelledby="contact" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content bg-conga border-0">
+			<div class="modal-header border-0">
+				<h5 class="modal-title">Contact</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>In case you have any questions, you can contact us via email at <strong><a class="text-reset" href="mailto:contact@conga.store">contact@conga.store</a></strong></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="credits" tabindex="-1" role="dialog" aria-labelledby="credits" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content bg-conga border-0">
+			<div class="modal-header border-0">
+				<h5 class="modal-title">Credits</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Design & Implementation by Florian Dussopt & Pierre Azalbert</p>
+				<p>Illustration by Stories by Freepik (https://stories.freepik.com)</p>
 			</div>
 		</div>
 	</div>

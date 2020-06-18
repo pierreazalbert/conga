@@ -46,7 +46,7 @@ async function renderWallet() {
 		if (booking.date == tomorrow.format("DD/MM/YYYY") || (booking.date == today.format("DD/MM/YYYY") && booking.time >= moment().format('HH:mm'))){ 
 			console.log(id, booking);
 			var shop = await db.collection('shops').doc(booking.shop).get();
-			wallet.append('<div class="col-sm-12 mb-5"><h4 class="pb-3" id="shop-name">' + shop.data().name + '</h4><div class="card border-light ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + ' text-center" style="background-color:' + booking.color + '" data-toggle="modal" data-target="#ticket-focus"><div class="card-body"><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:left">' + moment(booking.date, "DD/MM/YYYY").format("dddd Do MMMM") + '</h6><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:right">' + booking.time + '</h6><div style="clear: both;"></div><h1 class="card-title display-4 font-weight-bold mt-3">#' + booking.time.replace(':', '') + '</h1></div></div><button type="button" name="cancel" class="btn btn-secondary w-100 my-2" booking="' + id + '">Cancel booking</button></div>');
+			wallet.append('<div class="col-sm-12 mb-5"><h5 class="pb-0" id="shop-name">' + shop.data().name + '</h5><div class="card border-0 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + ' text-center" style="background-color:' + booking.color + '" data-toggle="modal" data-target="#ticket-focus"><div class="card-body"><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:left">' + moment(booking.date, "DD/MM/YYYY").format("dddd Do MMMM") + '</h6><h6 class="card-subtitle mb-2 ' + (lightOrDark(booking.color) ? 'text-dark':'text-white') + '" style="float:right">' + booking.time + '</h6><div style="clear: both;"></div><h1 class="card-title display-4 font-weight-bold mt-3">#' + booking.time.replace(':', '') + '</h1></div></div><button type="button" name="cancel" class="btn btn-conga btn-grey w-100 my-2" booking="' + id + '">Cancel booking</button></div>');
 
 			console.log(booking.time);
 			var diff = moment.duration(moment(booking.time, "HH:mm") - moment()).asMinutes();
@@ -67,7 +67,7 @@ async function renderWallet() {
 		});
 		if ((shop.address != undefined) && (filtered.length == 0)) {
 			console.log(id, shop);
-			favourites.append('<div class="col-sm-12 mb-5"><h4 class="pb-3" id="shop-name">' + shop.name + '</h4><button type="button" name="book" code="' + shop.code + '" class="btn btn-secondary w-100 mb-2">Make booking</button></h4><button type="button" name="forget" id="' + id + '" class="btn btn-secondary w-100 mb-2">Remove favourite</button></div>');
+			favourites.append('<div class="col-sm-12 mb-5"><h5 class="pb-0" id="shop-name">' + shop.name + '</h5><button type="button" name="book" code="' + shop.code + '" class="btn btn-conga btn-blue w-100 mb-2">Make booking</button></h4><button type="button" name="forget" id="' + id + '" class="btn btn-conga btn-grey w-100 mb-2">Remove favourite</button></div>');
 			$(':button[code=' + shop.code + ']').attr('onclick', 'window.location="/book?shop=' + shop.code + '"');
 			$(':button[id=' + id + ']').click(function() {
 				Cookies.remove(id);

@@ -4,25 +4,25 @@ html {
 
 @media (min-width: 576px) {
   html {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 }
 
 @media (min-width: 768px) {
   html {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
 }
 
 @media (min-width: 992px) {
   html {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 }
 
 @media (min-width: 1200px) {
   html {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 }
 
@@ -80,4 +80,98 @@ html {
 
 .bg-yellow {
   background-color: #f8ad17;
+}
+
+.btn-conga {
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+.btn-grey {
+  background-color: rgba(0,0,0,0) !important;
+  color: rgba(108,117,125,0.5) !important;
+  border: 1px solid rgba(108,117,125,0.2) !important;
+}
+
+.btn-grey:hover {
+  background-color: rgba(108,117,125,0.2) !important;
+  color: #FFFFFF !important;
+  border: 1px solid transparent !important;
+}
+
+.btn-blue {
+  background-color: #00a9a9 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #00a9a9 !important;
+}
+
+.btn-blue:hover {
+  background-color: rgba(0,0,0,0) !important;
+  color: #00a9a9 !important;
+  border: 1px solid #00a9a9 !important;
+}
+
+.btn-yellow {
+  background-color: #f8ad17 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #f8ad17 !important;
+}
+
+.btn-yellow:hover {
+  background-color: rgba(0,0,0,0) !important;
+  color: #f8ad17 !important;
+  border: 1px solid #f8ad17 !important;
+}
+
+.btn-book-green {
+  background-color: rgba(0,0,0,0) !important;
+  color: #7bd118 !important;
+  border: 1px solid #7bd118 !important;
+  font-weight: 700 !important;
+}
+
+.btn-book-green:hover, .btn-book-green.active {
+  background-color: #7bd118 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #7bd118 !important;
+}
+
+.btn-book-yellow {
+  background-color: rgba(0,0,0,0) !important;
+  color: #f8ad17 !important;
+  border: 1px solid #f8ad17 !important;
+  font-weight: 700 !important;
+}
+
+.btn-book-yellow:hover, .btn-book-yellow.active {
+  background-color: #f8ad17 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #f8ad17 !important;
+}
+
+.btn-book-grey.disabled {
+  background-color: rgba(108,117,125,0.2) !important;
+  color: #FFFFFF !important;
+  border: 1px solid transparent !important;
+  font-weight: 700 !important;
+}
+
+.btn-toggle-blue {
+  background-color: rgba(0,0,0,0) !important;
+  color: #00a9a9 !important;
+  border: 1px solid #00a9a9 !important;
+}
+
+.btn-toggle-blue.active {
+  background-color: #00a9a9 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #00a9a9 !important;
+}
+
+.alert-green {
+  color: #000000;
+  background-color: #7bd118;
 }

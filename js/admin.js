@@ -14,7 +14,7 @@ $(document).ready(async function () {
 	var bookings = await db.collection('tickets').where('shop', '==', shop.id).where('date', '==', moment().format("DD/MM/YYYY")).get();
 	if(bookings.empty) {
 		console.log("No bookings found for this shop!");
-		$('#all-bookings').empty().append('<div class="col-12 mb-2 d-flex justify-content-center"><label class="w-100 btn btn-outline-secondary nohover btn-lg">No bookings found for today</label></div>');
+		$('#all-bookings').empty().append('<div class="col-12 mb-2 d-flex justify-content-center"><label class="w-100 btn btn-grey btn-conga nohover btn-lg">No bookings found for today</label></div>');
 		$(':button[name=print]').hide();
 	} else {
 		console.log("Found following bookings: ", bookings.docs);
@@ -70,9 +70,9 @@ $(document).ready(async function () {
 			// layout adjustments & removing unused sections
 			$('#shop-settings').addClass('mb-5');
 			$('form > :submit').text('Save shop settings');
-			$('form').find('#email').parent().parent().remove();
 			$('form').find('#email').parent().parent().prev().remove();
 			$('form').find('#email').parent().parent().next().remove();
+			$('form').find('#email').parent().parent().remove();
 			$('form').find('.text-muted').remove();
 			$(":checkbox").change(function () {
 				$(this).parent().parent().parent().find("input[type='time']").prop('disabled', function(i, v) {
@@ -220,12 +220,12 @@ function renderQueue(shop, bookings){
 
 		} else {
 			$('#queue-status').find('h1').text('PLEASE WAIT').removeClass('text-white text-dark').addClass('text-dark');
-			$('#queue-status').find('h1').parent().css('background-color', '#FF9020');
+			$('#queue-status').find('h1').parent().css('background-color', '#f8ad17');
 		}
 
 	} else {
 		$('#queue-status').find('h1').text('NEXT CUSTOMER').removeClass('text-white text-dark').addClass('text-white');
-		$('#queue-status').find('h1').parent().css('background-color', '#35A000');
+		$('#queue-status').find('h1').parent().css('background-color', '#7bd118');
 	}
 
 }
@@ -238,12 +238,12 @@ function renderBookings(bookings){
 	$('#all-bookings').empty();
 	bookings.forEach(function (ticket) {
 		if (moment(ticket.data().time, 'HH:mm') < moment()) {
-			$('#all-bookings').append('<div class="col-4 col-xl-3 p-3 mb-2 d-flex justify-content-center"><label class="w-100 btn btn-outline-secondary nohover btn-lg">#' + ticket.data().time.replace(':', '') + '</label></div>');
+			$('#all-bookings').append('<div class="col-4 col-xl-3 p-2 mb-2 d-flex justify-content-center"><label class="w-100 btn btn-grey nohover btn-lg">#' + ticket.data().time.replace(':', '') + '</label></div>');
 		} else {
 			if ((ticket.data().time == closest.data().time) && (moment.duration(moment(closest.data().time, "HH:mm") - moment()).asMinutes() < 2)) {
-				$('#all-bookings').append('<div class="col-4 col-xl-3 p-3 mb-2 d-flex justify-content-center"><label class="w-100 font-weight-bold btn nohover btn-outline-dark btn-lg" style="box-shadow: 0 0 0 5px ' + ticket.data().color + '; border-color: transparent">#' + ticket.data().time.replace(':', '') + '</label></div>');
+				$('#all-bookings').append('<div class="col-4 col-xl-3 p-2 mb-2 d-flex justify-content-center"><label class="w-100 font-weight-bold btn nohover btn-outline-dark btn-lg" style="box-shadow: 0 0 0 5px ' + ticket.data().color + '; border-color: transparent">#' + ticket.data().time.replace(':', '') + '</label></div>');
 			}  else {
-				$('#all-bookings').append('<div class="col-4 col-xl-3 p-3 mb-2 d-flex justify-content-center"><label class="w-100 font-weight-bold btn btn-outline-dark nohover btn-lg">#' + ticket.data().time.replace(':', '') + '</label></div>');
+				$('#all-bookings').append('<div class="col-4 col-xl-3 p-2 mb-2 d-flex justify-content-center"><label class="w-100 font-weight-bold btn btn-outline-dark nohover btn-lg">#' + ticket.data().time.replace(':', '') + '</label></div>');
 			}
 		}
 	});

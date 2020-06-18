@@ -9,7 +9,7 @@
 
 	<meta name="author" content="Florian Dussopt & Pierre Azalbert">
 
-	<title>Conga - Getting started</title>
+	<title>Conga - Register</title>
 
 	    <!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -26,6 +26,7 @@
 	<!--Form submission-->
 	<script src="/js/lib/hashid.min.js" type="text/javascript"></script>
 	<script src="/js/setup.js"></script>
+	<link rel="stylesheet" href="conga.css">
 
 	<!-- Favicons -->
 	<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png?v=1">
@@ -43,14 +44,21 @@
 
 </head>
 
-<body class="bg-light">
+<body class="bg-conga">
 
 	<div class="container">
 
-		<div class="pt-2 pb-5 text-center">
-			<img class="d-block mx-auto mb-3" src="/assets/register.svg" alt="" width="150">
-			<h4 class="pb-2 font-weight-bold">Register your shop</h4>
-			<p>Welcome to Conga, the simple and intuitive booking system that can help you manage customer affluence in your store.</p>
+		<div class="pt-2 pb-5 pb-lg-0">
+			<a href="index.html"><img class="d-block mx-auto mt-3" src="/assets/logo.svg" alt="" width="125"></a>
+			<div class="row align-items-center justify-content-between">
+				<div class="col-12 col-lg-7 align-self-center text-center text-lg-left">
+					<h5 class="pb-2 font-weight-bold">Register your store</h5>
+					<p class="text-muted">Upon registration, you will receive an email with your shop booking link and your secret login link.</p>
+				</div>
+				<div class="col-6 mx-auto mx-lg-0 order-first order-lg-last col-lg-4">
+					<img src="/assets/register.svg" alt="">
+				</div>
+			</div>
 		</div>
 
 		<form id="setupForm" method="POST" class="needs-validation" novalidate>
@@ -235,7 +243,7 @@
 			<hr class="mb-4">
 
 			<div class="mb-4">
-				<h4>Booking parameters</h4>
+				<h5>Booking parameters</h5>
 				<h6 class="text-muted">Don't worry, you will be able to edit this later in you administrator panel if you need to change anything.</h6>
 			</div>
 
@@ -295,11 +303,11 @@
 
 			<hr class="mb-4">
 
-			<button class="btn btn-primary btn-lg btn-block" type="submit">Start accepting bookings</button>
+			<button class="btn btn-blue btn-conga btn-lg btn-block" type="submit">Start accepting bookings</button>
 
 		</form>
 
-		<div class="alert alert-success" role="alert" style="display:none">
+		<div class="alert alert-success d-none border-0" role="alert">
 			  <h4 class="alert-heading mb-3">Registration complete!</h4>
 			  <p>We have just sent you an email containing a secret login link to access your admin page</p>
 			  <p>Your shop's 4 letter code is ???? and this is your public booking link: conga.store/????</p>
@@ -308,15 +316,47 @@
 		</div>
 	</div>
 
-	<footer class="my-5 pt-5 text-muted text-center text-small">
-		<p class="mb-1">&copy; 2020 Conga.store Ltd</p>
-		<!-- <ul class="list-inline">
-			<li class="list-inline-item"><a href="#">Privacy</a></li>
-		      <li class="list-inline-item"><a href="#">Terms</a></li>
-		      <li class="list-inline-item"><a href="#">Support</a></li>
-		</ul> -->
+	<footer class="m-5 pt-5 text-muted text-center text-small">
+		<ul class="list-inline my-5">
+			<li class="list-inline-item"><a class="text-reset" data-toggle="modal" data-target="#contact">Contact</a></li>
+			<li class="list-inline-item"><a class="text-reset" data-toggle="modal" data-target="#credits">Credits</a></li>
+		</ul>
 	</footer>
 	</div>
+	<!-- Modal -->
+  <div class="modal fade" id="contact" tabindex="-1" role="dialog" aria-labelledby="contact" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content bg-conga border-0">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Contact</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>In case you have any questions, you can contact us via email at <strong><a class="text-reset" href="mailto:contact@conga.store">contact@conga.store</a></strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="credits" tabindex="-1" role="dialog" aria-labelledby="credits" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content bg-conga border-0">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Credits</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Design & Implementation by Florian Dussopt & Pierre Azalbert</p>
+          <p>Illustration by Stories by Freepik (https://stories.freepik.com)</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 
