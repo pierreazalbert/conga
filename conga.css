@@ -2,24 +2,82 @@ html {
   font-size: 1rem;
 }
 
-@include media-breakpoint-up(sm) {
+@media (min-width: 576px) {
   html {
     font-size: 1.2rem;
   }
 }
 
-@include media-breakpoint-up(md) {
+@media (min-width: 768px) {
   html {
     font-size: 1.4rem;
   }
 }
 
-@include media-breakpoint-up(lg) {
+@media (min-width: 992px) {
+  html {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
   html {
     font-size: 1.6rem;
   }
 }
 
 .nohover {
-pointer-events: none;
+  pointer-events: none;
+}
+
+.bg-conga {
+  background-color: #f0eee9;
+}
+
+.btn-home {
+  /* font-variant: small-caps; */
+  padding-left: 3rem !important;
+  padding-right: 3rem !important;
+  font-weight: 700 !important;
+  color: #FFFFFF;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;u
+}
+
+.btn-home-yellow {
+  background-color: #f8ad17;
+  border-color: #f8ad17;
+}
+
+.btn-home-yellow:hover {
+  background-color: rgba(0,0,0,0);
+  color: #f8ad17;
+}
+
+.btn-home-darkblue {
+  background-color: #2a275f;
+  border-color: #2a275f;
+}
+
+.btn-home-darkblue:hover {
+  background-color: rgba(0,0,0,0);
+  color: #2a275f;
+}
+
+.btn-home-blue {
+  background-color: #00a9a9;
+  border-color: #00a9a9;
+}
+
+.btn-home-blue:hover {
+  background-color: rgba(0,0,0,0);
+  color: #00a9a9;
+}
+
+.bg-pink {
+  background-color: #ed7680;
+}
+
+.bg-yellow {
+  background-color: #f8ad17;
 }

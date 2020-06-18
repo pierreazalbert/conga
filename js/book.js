@@ -86,7 +86,7 @@ async function createBooking(shop, schedule, slot) {
 		Cookies.set(doc.id, booking, {expires: 2});
 		Cookies.set(shop.id, shop.data(), {expires:365});
 		console.log('Added cookie with id:', doc.id);
-		window.location.href = 'index.html';
+		window.location.href = 'wallet.html';
 	});
 
 	// reserve booking for 5mins
