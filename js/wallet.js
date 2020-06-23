@@ -67,7 +67,7 @@ async function renderWallet() {
 		});
 		if ((shop.address != undefined) && (filtered.length == 0)) {
 			console.log(id, shop);
-			favourites.append('<div class="col-sm-12 mb-5"><h5 class="pb-0" id="shop-name">' + shop.name + '</h5><button type="button" name="book" code="' + shop.code + '" class="btn btn-conga btn-blue w-100 mb-2">Make booking</button></h4><button type="button" name="forget" id="' + id + '" class="btn btn-conga btn-grey w-100 mb-2">Remove favourite</button></div>');
+			favourites.append('<div class="col-sm-12 mb-5"><h5 class="pb-0" id="shop-name">' + shop.name + '</h5><button type="button" name="book" code="' + shop.code + '" class="btn btn-conga btn-blue w-100 mb-2">Make booking</button><button type="button" name="forget" id="' + id + '" class="btn btn-conga btn-grey w-100 mb-2">Remove favourite</button></div>');
 			$(':button[code=' + shop.code + ']').attr('onclick', 'window.location="/book?shop=' + shop.code + '"');
 			$(':button[id=' + id + ']').click(function() {
 				Cookies.remove(id);

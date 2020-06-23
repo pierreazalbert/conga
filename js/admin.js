@@ -15,7 +15,7 @@ $(document).ready(async function () {
 	if(bookings.empty) {
 		console.log("No bookings found for this shop!");
 		$('#all-bookings').empty().append('<div class="col-12 mb-2 d-flex justify-content-center"><label class="w-100 btn btn-grey btn-conga nohover btn-lg">No bookings found for today</label></div>');
-		$(':button[name=print]').hide();
+		$('#get-schedule').hide();
 	} else {
 		console.log("Found following bookings: ", bookings.docs);
 		var sorted = bookings.docs.slice();
@@ -65,7 +65,7 @@ $(document).ready(async function () {
 
 	$(':button[name=settings]').click(function () {
 
-		$('#shop-settings').load('setup.html form', function () {
+		$('#shop-settings').load('register.html form', function () {
 
 			// layout adjustments & removing unused sections
 			$('#shop-settings').addClass('mb-5');
@@ -83,6 +83,7 @@ $(document).ready(async function () {
 			// fill up form with current shop settings
 			$('form').find('#name').val(shop.data().name);
 			$('form').find('#address').val(shop.data().address);
+			$('form').find('#short').val(shop.data().short);
 			$.each(shop.data().hours, function(day, hours) {
 				if (hours == "closed") {
 					$('form').find('#' + day + '-closed').click();
@@ -93,12 +94,18 @@ $(document).ready(async function () {
 			});
 			$('form').find('#number').val(shop.data().bookings.number);
 			$('form').find('#rate').val(shop.data().bookings.rate);
+			$('form').find('input[name=control][value=' + shop.data().control + ']').prop('checked', true);
 
 			// form validation & Submission
 			$('input[type=time]').change(function () {
 				checkTimeInput(this);
 			});
-			$('#setupForm').submit(function (event) {
+			$('input[id=short]').change(async function () {
+				if (this.value != shop.data().short) {
+					await checkShortCodeInput(this);
+				}
+			});
+			$('#register').submit(function (event) {
 				var form = this;
 				if (form.checkValidity() === false) {
 		      event.preventDefault()
@@ -126,6 +133,7 @@ async function updateShopSettings(event, shop) {
 	// Get Values from the DOM
 	var shopName = $('#name').val();
 	var shopAddress = $('#address').val();
+	var shopShortCode = $('#short').val();
 	var monOpen = $('#mon-open').val();
 	var monClose = $('#mon-close').val();
 	var tueOpen = $('#tue-open').val();
@@ -142,11 +150,14 @@ async function updateShopSettings(event, shop) {
 	var sunClose = $('#sun-close').val();
 	var bookingNumber = parseInt($('#number').val());
 	var bookingRate = parseInt($('#rate').val());
+	var shopEmail = $('#email').val();
+	var queueControl = $('input[name=control]:checked').val() == 'true' ? true : false;
 
 	// Prepare object to send to database
 	var shopData = {
 		name: shopName,
 		address: shopAddress,
+		short: shopShortCode,
 		hours: {
 			mon: $('#mon-closed').prop('checked') ? "closed" : {open: monOpen, close: monClose},
 			tue: $('#tue-closed').prop('checked') ? "closed" : {open: tueOpen, close: tueClose},
@@ -159,7 +170,8 @@ async function updateShopSettings(event, shop) {
 		bookings: {
 			number: bookingNumber,
 			rate: bookingRate,
-		}
+		},
+		control: queueControl
 	}
 	console.log(shopData);
 
@@ -176,6 +188,7 @@ async function updateShopSettings(event, shop) {
 function renderShopSettings(shop) {
 	$('#shop-settings > > #name').text(shop.data().name);
 	$('#shop-settings > > #address').text(shop.data().address);
+	$('#shop-settings > > #short').text(shop.data().short);
 	$.each(shop.data().hours, function(day, hours) {
 		if (hours == "closed") {
 			$('#shop-settings > > #hours > > #' + day).text("Closed");
@@ -183,7 +196,12 @@ function renderShopSettings(shop) {
 			$('#shop-settings > > #hours > > #' + day).text(hours.open + ' to ' + hours.close);
 		}
 	});
-	$('#shop-settings > > #options').text("Accepting " + shop.data().bookings.number + " bookings every " + shop.data().bookings.rate + " minutes.");
+	$('#shop-settings > > #options').append("<p>Accepting " + shop.data().bookings.number + " bookings every " + shop.data().bookings.rate + " minutes.</p>");
+	if (shop.data().control == true) {
+		$('#shop-settings > > #options').append("<p>Customers with bookings will have priority, those without can still walk-in.</p>");
+	} else {
+		$('#shop-settings > > #options').append("<p>My shop only accepts customers with a booking.</p>");
+	}
 }
 
 async function updateShopQueueStatus(shop, status) {
@@ -202,6 +220,8 @@ async function updateShopQueueStatus(shop, status) {
 }
 
 function renderQueue(shop, bookings){
+
+	shop.control == true ? $('#toggle-queue').show() : $('#toggle-queue').hide();
 
 	var closest = bookings.find(booking => moment(booking.data().time, 'HH:mm') >= moment());
 
@@ -267,7 +287,7 @@ function makeSchedulePDF(bookings) {
 			row += 1;
 		}
 	});
-	$("button[name=print]").on('click', function () {
+	$("#get-schedule").on('click', function () {
 		pdf.save('schedule.pdf');
 		//pdf.autoPrint();
 	});
@@ -275,8 +295,10 @@ function makeSchedulePDF(bookings) {
 
 function renderLinks(shop) {
 	// copy link button
-	new ClipboardJS('#copy-link');
-	$("#copy-link").attr('data-clipboard-text', 'https://conga.store/book?shop=' + shop.data().code);
+	new ClipboardJS('#booking-link');
+	$("#booking-link").attr('data-clipboard-text', 'https://conga.store/book?shop=' + shop.data().code);
+	new ClipboardJS('#queue-link');
+	$("#queue-link").attr('data-clipboard-text', 'https://conga.store/display?key=' + shop.id);
 	// qr code and pdf poster
 	var qrcode = new QRCode(document.getElementById("qrcode"), 'https://conga.store/book?shop=' + shop.data().code);
 	$("#qrcode > img ").on('load', function() {
@@ -286,7 +308,7 @@ function renderLinks(shop) {
 		pdf.text("with Conga", 30, 50);
 		pdf.addImage(this.src, 30, 100, 100, 100);
 		pdf.text('www.conga.store/' + shop.data().code, 30, 250);
-		$("#get-pdf").on('click', function() {
+		$("#get-poster").on('click', function() {
 			pdf.save('Shop poster ('+ shop.data().code[0] + "-" + shop.data().code[1] + "-" + shop.data().code[2] + "-" + shop.data().code[3] + ')');
 		});
 	});

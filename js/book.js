@@ -4,11 +4,8 @@ Cookies.json = true;
 
 $(document).ready(async function () {
 
-	// get shop code
-	var code = getShopCode();
-
 	// get shop data
-	var shop = await getShopDataByCode(code);
+	var shop = await getShopDataByCode();
 	console.log(shop.id, shop.data());
 	$('#shop-name').prepend(shop.data().name);
 	$('#shop-address').text(shop.data().address);
@@ -187,39 +184,29 @@ async function listenBookings(shop) {
 	});
 }
 
-async function getShopDataByCode (code) {
-	var query = await db.collection('shops').where("code", "==", code).get();
-	if(query.empty) {
-		//throw new Error ("Error getting shop data: no shop found");
-		window.location.href = '/index.html';
-	} else {
-		var data = query.docs[0];
-		return data;
-	}
-}
-
-function getShopCode() {
+async function getShopDataByCode () {
 	var params = getParams(window.location.href);
 	if (params == null || !('shop' in params) ) {
 		console.log('no shop code detected');
 		window.location.href = 'index.html';
 	} else if ('shop' in params) {
-		if (params.shop.length == 4 && allLetters(params.shop) == true) {
-			console.log('detected shop code: ', params.shop);
+		if (params.shop.length == 4 && params.shop.match(/^[A-Z]{4}$/)) {
+			console.log('detected 4 letter shop code: ', params.shop);
+			query = await db.collection('shops').where("code", "==", params.shop).get();
+			if(query.empty) {
+				window.location.href = '/index.html';
+			} else {
+				var data = query.docs[0];
+				return data;
+			}
 		} else {
-			console.log('invalid shop code');
-			window.location.href = 'index.html';
+			query = await db.collection('shops').where("short", "==", params.shop).get();
+			if(query.empty) {
+				window.location.href = '/index.html';
+			} else {
+				var data = query.docs[0];
+				return data;
+			}
 		}
-	}
-	return params.shop;
-}
-
-function allLetters(input) {
-	var letters = /^[A-Za-z]+$/;
-	if (input.match(letters)) {
-		return true;
-	}
-	else {
-		return false;
 	}
 }

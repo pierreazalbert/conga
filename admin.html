@@ -56,10 +56,10 @@
 		<div class="row">
 
 			<div class="pt-2 pb-5 col-12">
-				<a href="index.html"><img class="d-block mx-auto mt-3" src="/assets/logo.svg" alt="" width="125"></a>
+				<a href="index.html"><img class="col-lg-2 col-3 d-block mx-auto mt-3" src="/assets/logo.svg" alt=""></a>
 				<div class="row align-items-center justify-content-between">
 					<div class="col-12 col-lg-7 align-self-center text-center text-lg-left">
-						<h5 class="pb-2 font-weight-bold" id="shop-name"></h5>
+						<h3 class="pb-2 font-weight-bold" id="shop-name"></h3>
 						<p class="lead text-muted font-weight-bold" id="shop-code"></p>
 						<a class="text-reset" id="shop-link" href="/book?shop=">Link to booking page</a>
 					</div>
@@ -106,7 +106,7 @@
 						<div class="row" id="all-bookings">
 
 						</div>
-						<button type="button" name="print" class="btn btn-lg btn-conga btn-blue my-2 w-100">Print schedule</button>
+						<button type="button" id="get-schedule" class="btn btn-lg btn-conga btn-blue my-2 w-100">Print schedule</button>
 					</div>
 				</div>
 			</div>
@@ -118,6 +118,8 @@
 					<dd class="col-9" id="name"></dd>
 					<dt class="col-3 mb-1">Address</dt>
 					<dd class="col-9" id="address"></dd>
+					<dt class="col-3 mb-1">Shortcode</dt>
+					<dd class="col-9" id="short"></dd>
 					<dt class="col-3 mb-1">Hours</dt>
 					<dd class="col-9" id="hours">
 						<dl class="row">
@@ -143,16 +145,29 @@
 				<button type="button" name="settings" class="btn btn-lg btn-conga btn-grey mb-5 w-100">Edit shop settings</button>
 			</div>
 
-			<div class="col-12  ">
-				<div class="row mb-5" id="booking-link">
-					<h5 class="col-12 pb-2">Booking link</h5>
-					<h6 class="col-12 text-muted mb-4">This is the link to your shop’s online booking page. Share it with your customers or print the generated poster to display it inside your shop.</h6>
-					<div class="col-12 mb-4 d-none" id="qrcode" ></div>
+			<div class="col-12 ">
+				<div class="row mb-5" id="useful-link">
+					<h5 class="col-12 pb-2">Useful links</h5>
+					<h6 class="col-12 text-muted mb-4">Here are the links to your shop's booking page and virtual queue page. Using a smartphone or tablet attached to the front of your shop, you can use the virtual queue page to remotely invite customers to get in.</h6>
 					<div class="col-6">
-						<button type="button" id="copy-link" class="btn btn-lg btn-conga btn-blue w-100">Copy link to booking page</button>
+						<button type="button" id="booking-link" class="btn btn-lg btn-conga btn-blue w-100">Copy link to booking page</button>
 					</div>
 					<div class="col-6">
-						<button type="button" id="get-pdf" class="btn btn-lg btn-conga btn-blue w-100">Download A4 poster</button>
+						<button type="button" id="queue-link" class="btn btn-lg btn-conga btn-blue w-100">Copy link to virtual queue page</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-12 ">
+				<div class="row mb-5" id="to-print">
+					<h5 class="col-12 pb-2">To print</h5>
+					<h6 class="col-12 text-muted mb-4">You can download and print the Conga leaflet to explain to your customers what Conga is and how it works. To help your customers book visits to your shop, you can also print a poster containing your shop's booking link and corresponding QR code.</h6>
+					<div class="col-6">
+						<a href="/assets/conga-leaflet.pdf" class="btn btn-lg btn-conga btn-blue w-100">Download Conga leaflet</a>
+					</div>
+					<div class="col-6">
+						<div class="col-12 mb-4 d-none" id="qrcode" ></div>
+						<button type="button" id="get-poster" class="btn btn-lg btn-conga btn-blue w-100">Download shop poster</button>
 					</div>
 				</div>
 			</div>

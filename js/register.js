@@ -1,7 +1,7 @@
 $(document).ready(async function() {
 
 	// Listen for submit event and check validity
-	//$('#setupForm').submit(event => submitForm(event);
+	//$('#register').submit(event => submitForm(event);
 	$('input[type=time]').change(function () {
 		checkTimeInput(this);
 	});
@@ -10,7 +10,11 @@ $(document).ready(async function() {
 		checkEmailInput(this);
 	});
 
-	$('#setupForm').submit(function (event) {
+	$('input[id=short]').change(async function () {
+		await checkShortCodeInput(this);
+	});
+
+	$('#register').submit(function (event) {
 		var form = this;
 		if (form.checkValidity() === false) {
       event.preventDefault()
@@ -32,31 +36,13 @@ $(document).ready(async function() {
 	});
 });
 
-function checkEmailInput(input) {
-	var constraint = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-	console.log(input.value);
-	if (constraint.test(input.value)) {
-		input.setCustomValidity('');
-	} else {
-		input.setCustomValidity('Incorrect email');
-	}
-}
-
-function checkTimeInput(input) {
-	var constraint = new RegExp("^([0-1][0-9]|[2][0-3]):([0-5][0-9])$");
-	if (constraint.test(input.value)) {
-		input.setCustomValidity('');
-	} else {
-		input.setCustomValidity('Incorrect time');
-	}
-}
-
 async function submitForm(event) {
 	event.preventDefault();
 
 	// Get Values from the DOM
 	var shopName = $('#name').val();
 	var shopAddress = $('#address').val();
+	var shopShortCode = $('#short').val();
 	var monOpen = $('#mon-open').val();
 	var monClose = $('#mon-close').val();
 	var tueOpen = $('#tue-open').val();
@@ -75,11 +61,13 @@ async function submitForm(event) {
 	var bookingRate = parseInt($('#rate').val());
 	var acceptMessages = $('#messages').prop('checked');
 	var shopEmail = $('#email').val();
+	var queueControl = $('input[name=control]:checked').val() == 'true' ? true : false;
 
 	// Prepare object to send to database
 	var shopData = {
 		name: shopName,
 		address: shopAddress,
+		short: shopShortCode,
 		hours: {
 			mon: $('#mon-closed').prop('checked') ? "closed" : {open: monOpen, close: monClose},
 			tue: $('#tue-closed').prop('checked') ? "closed" : {open: tueOpen, close: tueClose},
@@ -94,7 +82,8 @@ async function submitForm(event) {
 			rate: bookingRate,
 			messages: acceptMessages
 		},
-		status: 'auto'
+		status: 'auto',
+		control: queueControl
 	}
 	console.log(shopData);
 
@@ -126,7 +115,7 @@ async function submitForm(event) {
 			$('form').hide();
 			$('.alert > p > a').attr("href", "https://www.conga.store/admin?key=" + docRef.id);
 			$('.alert > p:eq(1)').text("Your shop's 4 letter code is " + shopData.code + " and this is your public booking link: conga.store/" + shopData.code);
-			$('.alert').show();
+			$('.alert').removeClass('d-none');
 		},
 			error: function (error) {
 			console.log("Error sending email");
@@ -134,5 +123,5 @@ async function submitForm(event) {
 	});
 
 	//Form Reset After Submission(7)
-	//$('#setupForm').trigger('reset');
+	//$('#register').trigger('reset');
 }

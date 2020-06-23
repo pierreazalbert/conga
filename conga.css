@@ -1,3 +1,10 @@
+body {
+  font-family: 'Open Sans', sans-serif !important;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
 html {
   font-size: 1rem;
 }
@@ -36,8 +43,9 @@ html {
 
 .btn-home {
   /* font-variant: small-caps; */
-  padding-left: 3rem !important;
-  padding-right: 3rem !important;
+  width: 15rem !important;
+  /* padding-left: 3rem !important;
+  padding-right: 3rem !important; */
   font-weight: 700 !important;
   color: #FFFFFF;
   padding-top: 0.75rem !important;
@@ -175,3 +183,5 @@ html {
   color: #000000;
   background-color: #7bd118;
 }
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3,
