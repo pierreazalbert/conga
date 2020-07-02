@@ -5,7 +5,7 @@ $(document).ready(async function () {
 	var shop = await getShopData(key);
 
   $('h3').text(shop.data().name);
-  $('h5').text('conga.store/' + shop.data().code);
+  $('h5').text('conga.store/' + shop.data().short);
 
   // listen to shop status updates and update queue display
   var update;

@@ -52,15 +52,21 @@ function checkTimeInput(input) {
 }
 
 async function checkShortCodeInput(input) {
+	var constraint = new RegExp("[a-z]{7,20}");
 	var shops = await db.collection("shops").get();
 	var previous = new Array();
 	shops.forEach(shop => previous.push(shop.data().short));
 	console.log(previous, previous.includes(input.value));
-	if (previous.includes(input.value)) {
-		input.setCustomValidity('Shortcode already taken');
+	if (constraint.test(input.value)) {
+		if (previous.includes(input.value)) {
+			input.setCustomValidity('Shortcode already taken');
+		} else {
+			input.setCustomValidity('');
+		}
 	} else {
-		input.setCustomValidity('');
+		input.setCustomValidity('Shortcode isn\'t in right format');
 	}
+
 }
 
 function lightOrDark(color) {

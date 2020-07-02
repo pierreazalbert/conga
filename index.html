@@ -22,9 +22,10 @@
   <script src="https://www.gstatic.com/firebasejs/7.14.3/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
 
-  <!--JS Functions -->
+  <!-- JS Functions -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment-with-locales.min.js" type="text/javascript"></script>
+
   <link rel="stylesheet" href="/conga.css">
 
 
@@ -45,9 +46,10 @@
 </head>
 
 <body class="bg-conga">
+  <div id="langmenu" class="text-reset font-weight-bold"></div>
   <div class="container-fluid px-0">
-    <div class="my-5 text-center">
-      <img class="d-block mx-auto mb-3" src="/assets/conga.svg" alt="" width="250">
+    <div class="my-5 text-center d-flex flex-column align-items-center">
+      <a href="#"><img class="mx-auto mb-3" src="/assets/conga.svg" alt="" width="250"></a>
       <a href="wallet.html" class="btn btn-home btn-home-yellow m-5" tabindex="-1" role="button" aria-disabled="true">GO TO MY BOOKINGS</a>
     </div>
     <div class="my-5 text-center">
@@ -57,7 +59,7 @@
     <div class="bg-pink text-center my-5 p-5">
       <p class="h5 font-weight-bold mb-3">Want to see how it works?</p>
       <p>See by yourself how easy it is to use Conga!</p>
-      <a href="/book?shop=DEMO" class="btn btn-home btn-home-darkblue m-3" tabindex="-1" role="button" aria-disabled="true">TRY IT NOW</a>
+      <a href="/demoshop" class="btn btn-home btn-home-darkblue m-3" tabindex="-1" role="button" aria-disabled="true">TRY IT NOW</a>
     </div>
     <div class="my-5 text-center">
       <img class="mb-5" src="/assets/shop.svg" alt="" width="300">
@@ -67,50 +69,34 @@
     <div class="bg-yellow text-center my-5 p-5">
       <p class="h5 font-weight-bold mb-3">Are you a shop owner?</p>
       <p>Discover Conga's features and register your shop.</p>
-      <a href="#" class="btn btn-home btn-home-blue m-3" tabindex="-1" role="button" aria-disabled="true">FIND OUT MORE</a>
+      <a href="details.html" class="btn btn-home btn-home-blue m-3" tabindex="-1" role="button" aria-disabled="true">FIND OUT MORE</a>
     </div>
     <footer class="m-5 pt-5 text-center text-small">
-      <p><strong>Conga</strong> was developped as our contribution to <strong>help local stores and busy people</strong> with <strong>unconvenient and risky queuing during the COVID19 pandemic</strong>.</p>
-      <!-- <p class="mb-1">&copy; 2020 Conga.store Ltd</p> -->
-      <ul class="list-inline my-5">
-        <li class="list-inline-item"><a class="text-reset" data-toggle="modal" data-target="#contact">Contact</a></li>
-        <li class="list-inline-item"><a class="text-reset" data-toggle="modal" data-target="#credits">Credits</a></li>
-      </ul>
+      <p class="mb-5"><strong>Conga</strong> was developed as our contribution to <strong>help local stores and busy people</strong> with <strong>unconvenient and risky queuing during the COVID19 pandemic</strong>.</p>
+      <a data-toggle="modal" data-target="#credits"><u>Credits & Contact</u></a>
     </footer>
   </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="contact" tabindex="-1" role="dialog" aria-labelledby="contact" aria-hidden="true">
+  <!-- Credits & Contact -->
+  <div class="modal fade" id="credits" tabindex="-1" role="dialog" aria-labelledby="contact" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content bg-conga border-0">
         <div class="modal-header border-0">
-          <h5 class="modal-title">Contact</h5>
+          <h5 class="modal-title">Credits & Contact</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <p>In case you have any questions, you can contact us via email at <strong><a class="text-reset" href="mailto:contact@conga.store">contact@conga.store</a></strong></p>
+          <p>Design & Implementation by <strong>Florian Dussopt & Pierre Azalbert</strong> - © 2020</p>
+          <p>Illustrations by <a class="text-reset font-weight-bold" href="https://stories.freepik.com">Stories by Freepik</a></p>
+          <p>In case you have any questions, you can contact us via email at <a class="text-reset font-weight-bold" href="mailto:contact@conga.store">contact@conga.store</a></p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="credits" tabindex="-1" role="dialog" aria-labelledby="credits" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content bg-conga border-0">
-        <div class="modal-header border-0">
-          <h5 class="modal-title">Credits</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p>Design & Implementation by Florian Dussopt & Pierre Azalbert</p>
-          <p>Illustration by <a href="https://stories.freepik.com">Stories by Freepik</a></p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Translation -->
+  <script src="/js/static-translations.js"></script>
+  <script src="/js/lib/lingumania.js"></script>
 </body>

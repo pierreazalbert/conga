@@ -1,8 +1,16 @@
 var tomorrow = moment().add(1, 'days');
 var countdown;
 Cookies.json = true;
+var palette = ['e50053', 'e87187', 'f1a9af', 'f9ae17', 'f7ca69', 'fbdea3', '2a275f', '605487', '9589ac', '00aaaa', '73c6c7', 'b3dada'];
+var lang = 'en';
 
 $(document).ready(async function () {
+
+	var params = getParams(window.location.href);
+	if ((params != null) && ('lang' in params) ) {
+		lang = params.lang;
+	}
+	moment.locale(lang);
 
 	// get shop data
 	var shop = await getShopDataByCode();
@@ -26,20 +34,20 @@ $(document).ready(async function () {
 	});
 
 	// check that shop is open tomorrow
-	$('#schedule-date').text(moment(tomorrow).format("dddd Do MMMM YYYY"));
+	$('#schedule-date').text(moment().add(1, 'days').format("dddd Do MMMM YYYY"));
 	var hours = shop.data().hours[tomorrow.toLocaleString().slice(0,3).toLowerCase()];
 	if (hours == "closed") {
-		$(":button").text('Shop not open tomorrow');
+		$(":button").text(translate.book.shop_not_open[lang]);
 		$(':button').parent().removeClass('fixed-bottom');
 		$(':button').parent().prev().addClass('d-none');
 	} else {
-		$('#shop-hours').text('Open ' + hours.open + ' to ' + hours.close);
+		$('#shop-hours').text(translate.book.open_from[lang] + ' ' + hours.open + ' ' + translate.book.open_until[lang] + ' ' + hours.close);
 
 		var bookings = Object.entries(Cookies.get());
 		// detect if user already has a booking for tomorrow
 		if (bookings.find(booking => (booking[1].shop == shop.id) && (booking[1].date == moment(tomorrow).format('DD/MM/YYYY'))) != undefined) {
 			//$("#schedule").text('You already have a booking for this day. You must cancel your existing booking before making a new one');
-			$(":button").text('You already have a booking for tomorrow. Click here to go to your wallet').removeClass('disabled').attr('onclick', 'window.location="/wallet"');
+			$(":button").text(translate.book.already_booked[lang]).removeClass('disabled').attr('onclick', 'window.location="/wallet"');
 			$(':button').parent().removeClass('fixed-bottom');
 			$(':button').parent().prev().addClass('d-none');
 			$(':button').removeClass('btn-grey').addClass('btn-yellow');
@@ -59,7 +67,7 @@ async function createBooking(shop, schedule, slot) {
 	var booking = schedule.find(row => row[0].time == slot).find(ticket => ticket.free == true);
 	booking.date = tomorrow.format("DD/MM/YYYY");
 	booking.shop = shop.id;
-	booking.color = '#' + Math.floor(Math.random()*16777215).toString(16);
+	booking.color = '#' + palette[Math.floor(Math.random()*palette.length)];
 	console.log(booking.color);
 	delete booking.free;
 
@@ -94,7 +102,7 @@ async function createBooking(shop, schedule, slot) {
 	countdown = setInterval(async function (){
 		expiry -= 1;
 		var clock = moment(moment.duration(expiry, 'seconds').as('milliseconds')).format('mm:ss');
-		$(':submit').removeClass('btn-grey disabled').addClass('btn-blue').text("Confirm booking (" + clock + ")" );
+		$(':submit').removeClass('btn-grey disabled').addClass('btn-blue').text(translate.book.confirm_booking[lang] + " (" + clock + ")" );
 		if (expiry == 0) {
 			var reserved = $(':submit').prop('ticket');
 			await db.collection('tickets').doc(reserved).delete();

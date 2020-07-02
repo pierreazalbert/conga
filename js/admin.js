@@ -6,7 +6,7 @@ $(document).ready(async function () {
 
 	// display shop info
 	$('#shop-name').text(shop.data().name);
-	$('#shop-code').prepend("Shop ID: " + shop.data().code[0] + "-" + shop.data().code[1] + "-" + shop.data().code[2] + "-" + shop.data().code[3]);
+	$('#shop-code').prepend("@" + shop.data().short);
 	$('#shop-link').prop('href', '/book?shop=' + shop.data().code);
 	$('[name=today]').text(moment().format("dddd Do MMMM"));
 
@@ -23,7 +23,7 @@ $(document).ready(async function () {
 
 		renderQueue(shop.data(), sorted);
 		renderBookings(sorted);
-		makeSchedulePDF(sorted);
+		makeSchedulePDF(shop, sorted);
 
 		if(shop.data().status == "auto") {
 			$("#next-booking").click();
@@ -65,7 +65,7 @@ $(document).ready(async function () {
 
 	$(':button[name=settings]').click(function () {
 
-		$('#shop-settings').load('register.html form', function () {
+		$('#shop-settings').load('signup.html form', function () {
 
 			// layout adjustments & removing unused sections
 			$('#shop-settings').addClass('mb-5');
@@ -270,27 +270,93 @@ function renderBookings(bookings){
 
 }
 
-function makeSchedulePDF(bookings) {
+function makeSchedulePDF(shop, bookings) {
+	var w = 210, y = 297;
 	var pdf = new jsPDF();
-	pdf.setFontSize(25);
-	pdf.text(moment().format("dddd Do MMMM"), 20, 20);
-	pdf.setFontSize(20);
-	var row = 0;
-	bookings.forEach(function (ticket, index) {
-		var column = index % 5;
-		pdf.setFillColor(ticket.data().color);
-		pdf.roundedRect(20+35*column, 30+20*row, 30, 15, 3, 3, "F");
-		pdf.setFontStyle("bold");
-		pdf.setTextColor(lightOrDark(ticket.data().color) ? 0:255);
-		pdf.text(ticket.data().time, 26+35*column, 40+20*row);
-		if ((column+1) % 5 == 0) {
-			row += 1;
-		}
+	pdf.setFont("open-sans", "bold");
+
+	var row = 0, column = 0;
+	var n_column = 4, n_row = 5;
+	var boxwidth = 35, boxheight = 15, spacing = 10;
+
+	var qrcode = new QRCode(document.getElementById("qrcode"), 'https://conga.store/' + shop.data().short);
+
+	$("#qrcode > img ").on('load', function() {
+
+		bookings.forEach(function (ticket, index) {
+
+			// bookings
+			var column = index % n_column;
+			pdf.setFillColor(ticket.data().color);
+			pdf.roundedRect(20+(boxwidth+spacing)*column, 90+(boxheight+spacing)*row, boxwidth, boxheight, 1, 1, "F");
+			pdf.setFontStyle("bold");
+			pdf.setFontSize(20);
+			pdf.setTextColor(lightOrDark(ticket.data().color) ? 0:255);
+			pdf.text('#' + ticket.data().time.replace(':', ''), 26.5+(boxwidth+spacing)*column, 100+(boxheight+spacing)*row);
+			if ((column+1) % n_column == 0) {
+				row += 1;
+				if ((row) % n_row == 0) {
+					pdf.addPage("a4", "p");
+					row = 0;
+				}
+			}
+
+			if ((row == 0) && (column == 0)) {
+				console.log('new page');
+				// header
+				pdf.setTextColor("#000000");
+				pdf.setFontStyle("bold");
+				pdf.setFontSize(20);
+				pdf.text(shop.data().name, w/2, 20, {align:'center'});
+				pdf.setFontStyle("regular");
+				pdf.setFontSize(18);
+				pdf.text("Don’t want to queue?", w/2, 30, {align:'center'});
+				pdf.text("We now offer a", (w/2)-18, 40, {align:'right'});
+				pdf.setTextColor("#e40053");
+				pdf.setFontStyle("bold");
+				pdf.text("priority booking service", (w/2)-15, 40, {align:'left'});
+				pdf.setTextColor("#000000");
+				pdf.setFontStyle("regular");
+				pdf.setFontSize(14);
+				pdf.text("(in addition of regular queuing for walk-ins)", w/2, 50, {align:'center'});
+
+				// date
+				pdf.text("Bookings for", (w/2)-10, 80, {align:'right'});
+				pdf.setFontStyle("bold");
+				pdf.text(moment().format("dddd Do MMMM"), (w/2)-8, 80, {align:'left'});
+
+				// footer
+				var img = new Image();
+				img.src = '/assets/conga.png';
+				pdf.addImage(img, 'png', 8, 266, 34.7, 23);
+				pdf.setFontSize(14);
+				pdf.setFontStyle("regular");
+				pdf.text("To book for tomorrow:", 52, 268);
+				pdf.setFontStyle("bold");
+				pdf.text("go to", 52, 275);
+				pdf.setTextColor("#e40053");
+				pdf.text("conga.store", 66, 275);
+				pdf.setTextColor("#000000");
+				pdf.text("/"+shop.data().short, 95, 275);
+				pdf.setFontSize(12);
+				pdf.text("Fast, Free & Simple!", 52, 284);
+				pdf.setFontStyle("regular");
+				pdf.text("No need to register • No app to install • No data collected", 52, 290);
+				pdf.addImage($("#qrcode > img ").attr('src'), 176, 264, 26, 26);
+			}
+
+		});
+
 	});
-	$("#get-schedule").on('click', function () {
+
+
+	$("#get-schedule").removeClass('d-none').on('click', function () {
 		pdf.save('schedule.pdf');
 		//pdf.autoPrint();
 	});
+
+
+
 }
 
 function renderLinks(shop) {
@@ -298,18 +364,5 @@ function renderLinks(shop) {
 	new ClipboardJS('#booking-link');
 	$("#booking-link").attr('data-clipboard-text', 'https://conga.store/book?shop=' + shop.data().code);
 	new ClipboardJS('#queue-link');
-	$("#queue-link").attr('data-clipboard-text', 'https://conga.store/display?key=' + shop.id);
-	// qr code and pdf poster
-	var qrcode = new QRCode(document.getElementById("qrcode"), 'https://conga.store/book?shop=' + shop.data().code);
-	$("#qrcode > img ").on('load', function() {
-		var pdf = new jsPDF();
-		pdf.setFontSize(40);
-		pdf.text("Book your visit", 30, 30);
-		pdf.text("with Conga", 30, 50);
-		pdf.addImage(this.src, 30, 100, 100, 100);
-		pdf.text('www.conga.store/' + shop.data().code, 30, 250);
-		$("#get-poster").on('click', function() {
-			pdf.save('Shop poster ('+ shop.data().code[0] + "-" + shop.data().code[1] + "-" + shop.data().code[2] + "-" + shop.data().code[3] + ')');
-		});
-	});
+	$("#queue-link").attr('data-clipboard-text', 'https://conga.store/queue?key=' + shop.id);
 }

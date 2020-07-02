@@ -82,12 +82,30 @@ html {
   color: #00a9a9;
 }
 
+.btn-home-pink {
+  background-color: #ed7680;
+  border-color: #ed7680;
+}
+
+.btn-home-pink:hover {
+  background-color: rgba(0,0,0,0);
+  color: #ed7680;
+}
+
 .bg-pink {
   background-color: #ed7680;
 }
 
 .bg-yellow {
   background-color: #f8ad17;
+}
+
+.bg-darkblue {
+  background-color: #2a275f;
+}
+
+.bg-blue {
+  background-color: #00a9a9;
 }
 
 .btn-conga {
