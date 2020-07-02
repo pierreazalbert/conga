@@ -255,8 +255,8 @@ var linguJSON = {
 
         },
         {
-            "source": "For inquiries about multi-store usage and customisation, or anything else - please do not hesitate to get in touch!",
-            "target_fr": "Pour toute demande de personalisation, d'utilisation dans les franchises, ou tout autre question - n'hésitez pas à prendre contact!",
+            "source": "For inquiries about multi-store usage, customisation, languages, or anything else - please do not hesitate to get in touch!",
+            "target_fr": "Pour toute demande de personalisation, d'utilisation dans les franchises, de traduction, ou tout autre question - n'hésitez pas à prendre contact!",
 
         },
         {
